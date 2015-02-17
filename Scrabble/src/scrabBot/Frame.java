@@ -53,5 +53,13 @@ public class Frame {
 		}
 		System.out.println();
 	}
+	
+	public String getString(){
+		StringBuilder builder = new StringBuilder();
+		for (Character value : getLetters()) {
+		    builder.append(value);
+		}
+		return builder.toString();
+	}
 }
 
