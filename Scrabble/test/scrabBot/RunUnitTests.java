@@ -2,13 +2,11 @@ package scrabBot;
 
 import org.junit.runner.JUnitCore;
 
-public class RunTests
+public class RunUnitTests
 {
 	public static void main(String[] args){
 		JUnitCore runner = new JUnitCore();
-		Board board = new Board();
 		
-		board.displayBoard();
 		runner.addListener(new ExecutionListener());
 		runner.run(AllTests.class);
 		
