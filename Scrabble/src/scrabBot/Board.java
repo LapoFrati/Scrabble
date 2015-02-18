@@ -84,95 +84,69 @@ public class Board {
 	}
 
 	public CheckResult checkPlacement(String word, int row, int column, Direction dir, Player player) {
-		boolean letter_used = false, connected = false;
+		boolean letterUsed = false, connectedToAnotherWord = false;
 		Frame frame = new Frame(player.getPlayerFrame());
-		int i = 0, incrementedRow = row, incrementedColumn = column;
+		int incrementedRow = row, incrementedColumn = column, i=0, j=0, len = word.length();
 		char c;
 		
-		int len = word.length();
-		
-		// --> 	first check for not empty word
-		
-		if (len == 0)
-			return CheckResult.NO_LETTER_USED;
-		
 		// --> bounds checks
-		
-			// check the left and top bounds
-		if	(  row < 1 || column < 1
-			// check the right bound
-			|| (dir == Direction.VERTICAL && row + len > MAX_ROW)
-			// check the bottom bound
-			|| (dir == Direction.HORIZONTAL && column + len > MAX_COLUMN))
+		if	(  row < 1 || column < 1 // check the left and top bounds
+			|| (dir == Direction.VERTICAL && row + len > MAX_ROW) // check the right bound
+			|| (dir == Direction.HORIZONTAL && column + len > MAX_COLUMN)) // check the bottom bound
 			return CheckResult.OUT_OF_BOUNDS;
 		
-		if (firstPlacement){
-			// --> check if the word is the first word is properly centered
-			if (   (dir == Direction.VERTICAL) && ( column != CENTER_COLUMN || CENTER_ROW < row || row + len < CENTER_ROW)
-				|| (dir == Direction.HORIZONTAL) && (row != CENTER_ROW || CENTER_COLUMN < column || column + len < CENTER_COLUMN))
-				return CheckResult.FIRST_NOT_CENTRED;
-			
-			// --> check if the player has the required letters
-			
-			if (len > frame.getFrameSize())
-				return CheckResult.LACK_NECESSARY_LETTERS;
-			
-			while (i < len) {
-				if (!frame.removeLetter(word.charAt(i))) //removeLetter returns false if the letter is not present in the frame
+		
+		// --> check if the player has the required letters, not counting the letters already on the board
+		for( Character letter : word.toCharArray() ){
+			if (board[row+i][column+j] == FREE_LOCATION ){
+				letterUsed = true;
+				if(!frame.removeLetter(letter)) // removeLetter returns false if the letter is not present in the frame
 					return CheckResult.LACK_NECESSARY_LETTERS;
-				i++;
 			}
+			if (dir == Direction.VERTICAL) 
+				i++;
+			else
+				j++;
 		}
 		
-		/*
-		 * Controls yet to perform:
-		 *  - Necessary letters
-		 *  - No letter used
-		 *  - Conflict
-		 *  - Connection
-		 */
+		// --> check that at least one letter has been used
+		if (!letterUsed)
+			return CheckResult.NO_LETTER_USED;
 		
+		if (firstPlacement){
+			// --> check placement of first word
+			if (   (dir == Direction.VERTICAL) && ( column != CENTER_COLUMN || CENTER_ROW < row || row + len < CENTER_ROW)
+				|| (dir == Direction.HORIZONTAL) && (row != CENTER_ROW || CENTER_COLUMN < column || column + len < CENTER_COLUMN))
+				return CheckResult.FIRST_NOT_CENTRED;	
+		}
 		else {
-			
-			if  ( (dir == Direction.VERTICAL && board[row-1][column] != FREE_LOCATION)
-				|| (dir == Direction.HORIZONTAL && board[row][column-1] != FREE_LOCATION))
-				connected = true;
-			
-			while (i < len) {
-				
-				if	((	dir == Direction.VERTICAL
-						&&(		board[incrementedRow+1][column] != FREE_LOCATION
-							||	board[incrementedRow][column-1] != FREE_LOCATION
-							||	board[incrementedRow][column+1] != FREE_LOCATION))
+			for( Character letter : word.toCharArray() ){
+				// --> check if the word connects to another one looking at surrounding positions
+				if(   connectedToAnotherWord == false &&
+					  (dir == Direction.VERTICAL
+						&&(	board[incrementedRow+1][column] != FREE_LOCATION
+						||  board[incrementedRow-1][column] != FREE_LOCATION
+						||	board[incrementedRow][column-1] != FREE_LOCATION
+						||	board[incrementedRow][column+1] != FREE_LOCATION))
 					||(	dir == Direction.HORIZONTAL
-						&&(		board[row][incrementedColumn+1] != FREE_LOCATION
-							||	board[row-1][incrementedColumn] != FREE_LOCATION
-							||	board[row+1][incrementedColumn] != FREE_LOCATION)))
-					connected = true;
+						&&(	board[row][incrementedColumn+1] != FREE_LOCATION
+						||  board[row][incrementedColumn-1] != FREE_LOCATION
+						||	board[row-1][incrementedColumn] != FREE_LOCATION
+						||	board[row+1][incrementedColumn] != FREE_LOCATION))
+				)connectedToAnotherWord = true;
 				
 				c = board[incrementedRow][incrementedColumn];
-				
-				if (c == FREE_LOCATION) {
-					if (!frame.removeLetter(word.charAt(i)))
-						return CheckResult.LACK_NECESSARY_LETTERS;
-					else
-						letter_used = true;
-				}
-				else {
-					if (c != word.charAt(i))
-						return CheckResult.CONFLICT;
-				}
+				if (c != FREE_LOCATION && c != letter )
+					return CheckResult.CONFLICT;
 				
 				if (dir == Direction.VERTICAL)
 					incrementedRow++;
-				if(dir == Direction.HORIZONTAL)
+				else
 					incrementedColumn++;
-				i++;
 			}
 			
-			if (!letter_used)
-				return CheckResult.NO_LETTER_USED;
-			if (!connected)
+			// --> check if word has connected to at least one word 
+			if (!connectedToAnotherWord)
 				return CheckResult.NOT_CONNECTED;
 		}
 
@@ -186,10 +160,11 @@ public class Board {
 		
 		word = word.toUpperCase();
 		
-		if(dir == Direction.VERTICAL)
-			for(int i = 0; i<word.length(); i++) board[row+i][column] = word.charAt(i);
-		if(dir == Direction.HORIZONTAL)
-			for(int i = 0; i<word.length(); i++) board[row][column+i] = word.charAt(i);
+		for(int i = 0; i<word.length(); i++)
+			if(dir == Direction.VERTICAL)
+				board[row+i][column] = word.charAt(i);
+			else
+				board[row][column+i] = word.charAt(i);
 			
 	}
 	

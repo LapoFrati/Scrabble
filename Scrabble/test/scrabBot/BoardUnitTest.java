@@ -125,7 +125,7 @@ public class BoardUnitTest {
 	
 	@Test
 	public void testCheckPlacement_CONFLICT(){
-		assertEquals(CheckResult.CONFLICT ,myBoard.checkPlacement("DAE", Board.CENTER_ROW , Board.CENTER_COLUMN, Direction.HORIZONTAL, P1));
+		assertEquals(CheckResult.CONFLICT ,myBoard.checkPlacement("DAE", Board.CENTER_ROW , Board.CENTER_COLUMN, Direction.VERTICAL, P1));
 	}
 	
 	@Test
