@@ -8,7 +8,6 @@ import org.junit.Test;
 public class PoolUnitTest {
 	private Pool regularTestPool;
 	private Pool emptyTestPool;
-	private final Character[] emptyState = {};
 	final static int POOL_INITIAL_DIMENSION = 100;
 	final static int LETTER_F_VALUE = 4;
 	final static char NONEXISTING_LETTER = '#';
@@ -16,7 +15,7 @@ public class PoolUnitTest {
 	@Before
 	public void setUp(){
 		regularTestPool = new Pool();
-		emptyTestPool = new Pool(emptyState);
+		emptyTestPool = new MockPool();
 		
 	}
 	

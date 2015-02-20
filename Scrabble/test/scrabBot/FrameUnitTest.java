@@ -13,16 +13,14 @@ public class FrameUnitTest {
 	Frame emptyTestFrame;
 	Pool regularTestPool;
 	Pool emptyTestPool;
-	final Character[] myState = {'A', 'B', 'C', 'D', 'E', 'F', 'G'};
-	final Character[] emptyState = {};
 	final int REGULAR_FRAME_SIZE = 7;
 	
 	@Before
 	public void setUp(){
-		myTestFrame = new Frame(myState);
-		emptyTestFrame = new Frame(emptyState);
+		myTestFrame = new MockFrame(); // MockFrame contains {'A', 'B', 'C', 'D', 'E', 'F', 'T'};
+		emptyTestFrame = new Frame();
 		regularTestPool = new Pool();
-		emptyTestPool = new Pool(emptyState);
+		emptyTestPool = new MockPool();
 	}
 	
 	@Test
@@ -65,7 +63,8 @@ public class FrameUnitTest {
 	@Test
 	public void testGetLetters() {
 		ArrayList<Character> retrievedLetters = myTestFrame.getLetters();
-		assertEquals(retrievedLetters, Arrays.asList(myState));
+		Character[] expectedLetters = {'A', 'B', 'C', 'D', 'E', 'F', 'T'};
+		assertEquals(retrievedLetters, Arrays.asList(expectedLetters));
 	}
 
 	@Test
