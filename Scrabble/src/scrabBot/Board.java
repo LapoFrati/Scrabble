@@ -8,7 +8,12 @@ public class Board {
 	public static final char FREE_LOCATION = '#';
 	
 	private boolean firstPlacement;
-
+	
+	/* The default scrabble board size is 15x15.
+	 * Only line padding has been added to the arrays (making them 17x17) for two reasons:
+	 * - access the array consistently with the user's input which ranges from 1-15
+	 * - make check placement more simple, otherwise specific corner cases would have been needed to prevent OutOfBound exceptions
+	 * */
 	private static final int wordMultiplier[][] =
 		{{0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 }, 
 		{ 0 , 3 , 1 , 1 , 1 , 1 , 1 , 1 , 3 , 1 , 1 , 1 , 1 , 1 , 1 , 3 , 0 },

@@ -4,10 +4,9 @@
 package scrabBot;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class Frame {
-	private ArrayList<Character> frame;
+	protected ArrayList<Character> frame;
 	
 	public Frame(){
 		this.frame = new ArrayList<Character>();
@@ -15,10 +14,6 @@ public class Frame {
 	
 	public Frame(Frame frame){
 		this.frame = frame.getLetters();
-	}
-	
-	public Frame(Character[] letters){
-		this.frame = new ArrayList<Character>(Arrays.asList(letters));
 	}
 	
 	/* If the specified letter is present into the frame it is removed and the frameSize is decreased, otherwise it raises an exception */

@@ -39,7 +39,7 @@ public class BoardUnitTest {
 	public void setUp(){
 		regularBoard = new Board();
 		myBoard = new Board(customBoard);
-		P1 = new Player(myFrame);
+		P1 = new MockPlayer();
 	}
 
 	@Test

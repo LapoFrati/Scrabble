@@ -4,10 +4,10 @@
 package scrabBot;
 
 public class Player {
-	private int playerScore;
-	private String playerName;
-	private Frame frame;
-	private static int numberOfPlayers = 0;
+	protected int playerScore;
+	protected String playerName;
+	protected Frame frame;
+	protected static int numberOfPlayers = 0;
 	
 	public Player()
 	{
@@ -15,14 +15,6 @@ public class Player {
 		Player.numberOfPlayers = numberOfPlayers + 1; // Default player name will be PlayerN where N is the number of player created so far
 		this.playerName = "Player".concat(Integer.toString(numberOfPlayers));
 		this.frame = new Frame();
-	}
-	
-	public Player(Character[] letters)
-	{
-		this.playerScore = 0;
-		Player.numberOfPlayers = numberOfPlayers + 1; // Default player name will be PlayerN where N is the number of player created so far
-		this.playerName = "Player".concat(Integer.toString(numberOfPlayers));
-		this.frame = new Frame(letters);
 	}
 	
 	public Player(String name){
