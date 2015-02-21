@@ -95,11 +95,8 @@ public class Board {
 		char c;
 		
 		// --> bounds checks
-		if	(  row < 1 || column < 1 // check the left and top bounds
-			|| (dir == Direction.VERTICAL && row + len > MAX_ROW) // check the right bound
-			|| (dir == Direction.HORIZONTAL && column + len > MAX_COLUMN)) // check the bottom bound
+		if	(outOfBounds(dir, row, column, len))
 			return CheckResult.OUT_OF_BOUNDS;
-		
 		
 		// --> check if the player has the required letters, not counting the letters already on the board
 		for( Character letter : word.toCharArray() ){
@@ -120,25 +117,14 @@ public class Board {
 		
 		if (firstPlacement){
 			// --> check placement of first word
-			if (   (dir == Direction.VERTICAL) && ( column != CENTER_COLUMN || CENTER_ROW < row || row + len < CENTER_ROW)
-				|| (dir == Direction.HORIZONTAL) && (row != CENTER_ROW || CENTER_COLUMN < column || column + len < CENTER_COLUMN))
+			if (notCentered(dir, row, column, len))
 				return CheckResult.FIRST_NOT_CENTRED;	
 		}
 		else {
 			for( Character letter : word.toCharArray() ){
 				// --> check if the word connects to another one looking at surrounding positions
-				if(   connectedToAnotherWord == false &&
-					  (dir == Direction.VERTICAL
-						&&(	board[incrementedRow+1][column] != FREE_LOCATION
-						||  board[incrementedRow-1][column] != FREE_LOCATION
-						||	board[incrementedRow][column-1] != FREE_LOCATION
-						||	board[incrementedRow][column+1] != FREE_LOCATION))
-					||(	dir == Direction.HORIZONTAL
-						&&(	board[row][incrementedColumn+1] != FREE_LOCATION
-						||  board[row][incrementedColumn-1] != FREE_LOCATION
-						||	board[row-1][incrementedColumn] != FREE_LOCATION
-						||	board[row+1][incrementedColumn] != FREE_LOCATION))
-				)connectedToAnotherWord = true;
+				if	(connectedToAnotherWord == false && checkIfConnectedToAnotherWord(dir, incrementedRow, incrementedColumn))
+					connectedToAnotherWord = true;
 				
 				c = board[incrementedRow][incrementedColumn];
 				if (c != FREE_LOCATION && c != letter )
@@ -217,5 +203,33 @@ public class Board {
 		}
 		System.out.println("   ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----");	
 	}
+	
+	private boolean outOfBounds (Direction dir, int row, int column, int len) {
+		if	(  row < 1 || column < 1 // check the left and top bounds
+				|| (dir == Direction.VERTICAL && row + len > MAX_ROW) // check the right bound
+				|| (dir == Direction.HORIZONTAL && column + len > MAX_COLUMN)) // check the bottom bound
+			return true;
+		else
+			return false;
+	}
+	
+	private boolean checkIfConnectedToAnotherWord (Direction dir, int row, int column) {
+		if	(	
+					board[row][column+1] != FREE_LOCATION
+				||  board[row][column-1] != FREE_LOCATION
+				||	board[row-1][column] != FREE_LOCATION
+				||	board[row+1][column] != FREE_LOCATION
+			)
+			return true;
+		else
+			return false;
+	}
 
+	private boolean notCentered (Direction dir, int row, int column, int len) {
+		if (	(dir == Direction.VERTICAL) && ( column != CENTER_COLUMN || CENTER_ROW < row || row + len < CENTER_ROW)
+				||	(dir == Direction.HORIZONTAL) && (row != CENTER_ROW || CENTER_COLUMN < column || column + len < CENTER_COLUMN))
+			return true;
+		else
+			return false;
+	}
 }
