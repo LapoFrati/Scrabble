@@ -179,10 +179,10 @@ public class Board {
 	
 	public void displayBoard()
 	{
-		System.out.println("    1    2    3    4    5    6    7    8    9    10   11   12   13   14   15");
+		System.out.println("    A    B    C    D    E    F    G    H    I    J    K    L    M    N   O ");
 		for(int counterX = 1; counterX <= MAX_ROW; counterX++)
 		{
-			System.out.println("   ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯");
+			System.out.println("   ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----");
 			if(counterX < 10)
 				System.out.print(counterX + " ");
 			else
@@ -215,7 +215,7 @@ public class Board {
 			}
 			System.out.println("");
 		}
-		System.out.println("   ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯ ¯¯¯¯");	
+		System.out.println("   ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----");	
 	}
 
 }
