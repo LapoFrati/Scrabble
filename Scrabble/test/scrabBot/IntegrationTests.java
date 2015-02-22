@@ -14,7 +14,7 @@ public class IntegrationTests {
 		Player P1 = new Player();
 		Frame frame = P1.getPlayerFrame();
 		
-		System.out.println("\n Starting Integration Tests: ");
+		System.out.println("\nStarting Integration Tests: \n");
 		
 		System.out.println("Pool's size: "+ myPool.getPoolSize());
 		frame.refillFrame(myPool);

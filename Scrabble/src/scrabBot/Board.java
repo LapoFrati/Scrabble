@@ -165,7 +165,7 @@ public class Board {
 	
 	public void displayBoard()
 	{
-		System.out.println("    A    B    C    D    E    F    G    H    I    J    K    L    M    N   O ");
+		System.out.println("    A    B    C    D    E    F    G    H    I    J    K    L    M    N    O ");
 		for(int counterX = 1; counterX <= MAX_ROW; counterX++)
 		{
 			System.out.println("   ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ---- ----");
