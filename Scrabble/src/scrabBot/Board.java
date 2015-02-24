@@ -7,7 +7,7 @@ public class Board {
 	public static final int CENTER_ROW = 8, CENTER_COLUMN = 8, MAX_COLUMN = 15, MAX_ROW = 15, PADDING = 2;
 	public static final char FREE_LOCATION = '#';
 	
-	private boolean firstPlacement;
+	protected boolean firstPlacement;
 	
 	/* The default scrabble board size is 15x15.
 	 * Only line padding has been added to the arrays (making them 17x17) for two reasons:
@@ -52,22 +52,7 @@ public class Board {
 		{ 0 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 2 , 1 , 1 , 1 , 0 },
 		{ 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 , 0 }};
 	
-	private char board[][];
-	
-	public enum Direction {
-		VERTICAL, HORIZONTAL
-	}
-	
-	public enum CheckResult {
-		OK,
-		LACK_NECESSARY_LETTERS,
-		OUT_OF_BOUNDS,
-		CONFLICT,
-		NO_LETTER_USED,
-		FIRST_NOT_CENTRED,
-		NOT_CONNECTED,
-		NOT_IN_DICTIONARY
-	}
+	protected char board[][];
 	
 	public Board(){
 		resetBoard();

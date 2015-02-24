@@ -3,9 +3,6 @@
  */
 package scrabBot;
 
-import scrabBot.Board.CheckResult;
-import scrabBot.Board.Direction;
-
 public class IntegrationTests {
 
 	public static void main(String[] args) {
