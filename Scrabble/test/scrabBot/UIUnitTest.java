@@ -41,7 +41,7 @@ public class UIUnitTest {
 	
 	@Test
 	public void validateInput_PASSTURN_FALSE(){
-        assertTrue( testUI.validateInput("PAS"));
+        assertFalse( testUI.validateInput("PAS"));
 	}
 	
 	@Test
@@ -60,7 +60,7 @@ public class UIUnitTest {
 	
 	@Test
 	public void validateInput_GETHELP_FALSE(){
-        assertTrue( testUI.validateInput("HELPP"));
+        assertFalse( testUI.validateInput("HELPP"));
 	}
 	
 	@Test
@@ -79,17 +79,17 @@ public class UIUnitTest {
 	
 	@Test
 	public void validateInput_PLACEWORD_FALSE_WRONGREF(){
-        assertTrue( testUI.validateInput("Z13 A HELLO"));
+        assertFalse( testUI.validateInput("Z13 A HELLO"));
 	}
 	
 	@Test
 	public void validateInput_PLACEWORD_FALSE_WRONGDIR(){
-        assertTrue( testUI.validateInput("A1 P HELLO"));
+        assertFalse( testUI.validateInput("A1 P HELLO"));
 	}
 	
 	@Test
 	public void validateInput_PLACEWORD_FALSE_WRONGWORD(){
-        assertTrue( testUI.validateInput("A1 A @@@@"));
+        assertFalse( testUI.validateInput("A1 A @@@@"));
 	}
 	
 	@Test
@@ -108,17 +108,17 @@ public class UIUnitTest {
 	
 	@Test
 	public void validateInput_EXCHANGELETTERS_FALSE_WRONGCHOICE(){
-        assertTrue( testUI.validateInput("EXCHANG ABC"));
+        assertFalse( testUI.validateInput("EXCHANG ABC"));
 	}
 	
 	@Test
 	public void validateInput_EXCHANGELETTERS_FALSE_WRONGWORD(){
-        assertTrue( testUI.validateInput("EXCHANGE @@@@"));
+        assertFalse( testUI.validateInput("EXCHANGE @@@@"));
 	}
 	
 	@Test
 	public void validateInput_EXCHANGELETTERS_FALSE_WORDTOOLONG(){
-        assertTrue( testUI.validateInput("EXCHANGE ABCDEFGHIJKLMNOPQRSTUVXYZ"));
+        assertFalse( testUI.validateInput("EXCHANGE ABCDEFGHIJKLMNOPQRSTUVXYZ"));
 	}
 
 }

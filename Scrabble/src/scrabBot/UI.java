@@ -21,7 +21,7 @@ public class UI {
 		return false;
 	}
 	
-	private void promptActivePlayer(){
+	private void promptActivePlayer(String activePlayer){
 		
 	}
 }
