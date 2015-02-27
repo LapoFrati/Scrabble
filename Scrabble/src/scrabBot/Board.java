@@ -58,11 +58,6 @@ public class Board {
 		resetBoard();
 	}
 	
-	public Board(char board[][]){
-		firstPlacement = false;
-		this.board = board;
-	}
-	
 	public void resetBoard(){
 		firstPlacement = true;
 		board = new char[MAX_ROW + PADDING][MAX_COLUMN + PADDING];
