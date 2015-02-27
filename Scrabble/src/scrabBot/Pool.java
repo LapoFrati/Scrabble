@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-public class Pool {
+public class Pool implements Cloneable{
 	protected HashMap<Character,Integer> letterValues;
 	protected ArrayList<Character> pool;
 	protected final char[] letters = {' ','E','A','I','O','N','R','T','L','S','U','D','G','B','C','M','P','F','H','V','W','Y','K','J','X','Q','Z'};
@@ -17,8 +17,20 @@ public class Pool {
  		letterValues = new HashMap<Character,Integer>();
  		pool = new ArrayList<Character>();
 		fillPool();
-		Collections.shuffle(pool);
+		shufflePool();
 		assignValuesToLetters();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public ArrayList<Character> getRemainingLetters(){
+		ArrayList<Character> tempPool = (ArrayList<Character>) pool.clone();
+		Collections.shuffle(tempPool);
+		return tempPool;
+			
+	}
+	
+	public void shufflePool(){
+		Collections.shuffle(pool);
 	}
 	
 	private void insertLetterIntoPool( Character letter, int copies){
