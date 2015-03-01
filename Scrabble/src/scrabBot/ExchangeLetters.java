@@ -3,12 +3,12 @@ package scrabBot;
 public class ExchangeLetters extends Action {
 	private String lettersToChange;
 	
-	ExchangeLetters(Choice choice, String letters){
-		super(choice);
+	ExchangeLetters(String letters) {
+		super(Choice.EXCHANGELETTERS);
 		lettersToChange = letters;		
 	}
 	
-	String getLettersToChange(){
+	String getLettersToChange() {
 		return lettersToChange;
 	}
 }

@@ -5,11 +5,11 @@ public class PlayWord extends Action {
 	private Direction dir;
 	private String word;
 	
-	PlayWord(Choice choice, int row, char column, Direction dir, String word){
-		super(choice);
+	PlayWord(char column, int row, char dir, String word){
+		super(Choice.PLAYWORD);
 		this.row = row;
 		this.column = (int)(column - 'A') + 1; //board is indexed starting from 1
-		this.dir = dir;
+		this.dir = (dir == 'A') ? Direction.HORIZONTAL : Direction.VERTICAL;
 		this.word = word;
 	}
 	

@@ -1,51 +1,30 @@
 package scrabBot;
 
+import java.util.Scanner;
+
 public class ActionFactory {
-	public static Action buildCar(Choice choice) {
-        Action action = null;
+	private static Scanner sc;
+
+	public static Action buildAction(String choice) {
+		sc = new Scanner(choice);
+        String firstToken = sc.next();
         
-        switch (choice) {
-        case QUIT:
-            action = new Quit(choice);
-            break;
- 
-        case PASSTURN:
-            action = new PassTurn(choice);
-            break;
- 
-        case GETHELP:
-            action = new GetHelp(choice);
-            break;
- 
+        switch (firstToken) {
+        case "QUIT":
+            return new Quit();
+        case "PASS":
+            return new PassTurn();
+        case "HELP":
+            return new GetHelp();
+        case "EXCHANGE":
+        	String lettersToExchange = sc.next();
+        	return new ExchangeLetters(lettersToExchange);
         default:
-            // throw some exception
-            break;
+        	char column = firstToken.charAt(0);
+        	int row = Integer.parseInt(firstToken.substring(1));
+        	char dir = sc.next().charAt(0);
+        	String wordToPlace = sc.next();
+            return new PlayWord(column, row, dir, wordToPlace);
         }
-        
-        return action;
-    }
-	
-	public static Action buildCar(Choice choice, String letters) {
-        Action action = null;
-        
-        if( choice == Choice.EXCHANGELETTERS )
-        	action = new ExchangeLetters(choice, letters);
-        else
-        	System.out.println("Error");
-            // throw some exception
-            
-        return action;
-    }
-	
-	public static Action buildCar(Choice choice, int row, char column, Direction dir, String word) {
-        Action action = null;
-        
-        if( choice == Choice.PLAYWORD )
-        	action = new PlayWord(choice, row, column, dir, word);
-        else
-        	System.out.println("Error");
-            // throw some exception
-            
-        return action;
     }
 }
