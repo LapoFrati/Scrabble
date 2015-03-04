@@ -26,7 +26,16 @@ public class Scrabble {
 
 	public void startGame(){
 		while(keepPlaying){
-			//Main loop of the game
+			board.displayBoard();
+			activePlayer.getPlayerFrame();
+			if(activePlayer == P1)
+			{
+				ui.promptActivePlayer("Player 1");
+			}
+			if(activePlayer == P2)
+			{
+				ui.promptActivePlayer("Player 2");
+			}
 		}
 	}
 	
@@ -35,8 +44,57 @@ public class Scrabble {
 	 * remember the bonus points for using all the letters!
 	 * 
 	 * */
-	public void calculatePlacementPoints(){
-
+	public void calculatePlacementPoints(String wordPlayed, int xCord, int yCord, Direction dir){
+		int total = 0;
+		int y = yCord;
+		int x = xCord;
+		int wordMult = 1;
+		if(wordPlayed.length() == 7)
+		{
+			total = 50;
+		}
+		
+			if(dir == Direction.VERTICAL)
+				x++;
+			else
+				y++;
+		for(int i = 0; i < wordPlayed.length(); i++)
+		{
+			if(dir == Direction.VERTICAL)
+			{
+			if(Board.wordMultiplier[x][y] != 1)
+			{
+				wordMult = Board.wordMultiplier[x][y];
+			}
+			x++;
+			}
+			else
+			{
+				if(Board.wordMultiplier[x][y] != 1)
+				{
+					wordMult = Board.wordMultiplier[x][y];
+				}
+				y++;
+			}
+		}
+		
+	x = xCord;
+	y = yCord;
+	
+		for(int j = 0; j < wordPlayed.length(); j++)
+		{
+			if(dir == Direction.VERTICAL)
+			{
+					total = total + pool.checkValue(board.getLetterAt(x,y)) * Board.letterMultiplier[x][y] * wordMult;
+					x++;
+			}
+			else
+			{
+				total = total + pool.checkValue(board.getLetterAt(x,y)) * Board.letterMultiplier[x][y] * wordMult;
+				y++;
+			}
+		}
+		activePlayer.increasePlayerScoreBy(total);
 	}
 	
 	private void quitGame(){
