@@ -10,19 +10,21 @@ public class UI {
 
 	public UI() {}
 	
-	public Action getUserInput(InputStream source, String player){
+	public Action getUserInput(InputStream source){
 		sc = new Scanner(source);
-		boolean correctInput = false;
-		while(!correctInput) {
+		nextAction = sc.nextLine();
+		while(!validateInput(nextAction)) {
 			nextAction = sc.nextLine();
-			correctInput = nextAction.matches("QUIT|PASS|HELP|EXCHANGE [A-Z]{1,7}|[A-O]([1-9]|1[0-5]) [AD] [A-Z ]{1,15}");
-			if(!correctInput)
-				System.out.println("Legal options:\nQUIT\nHELP\nPASS\nEXCHANGE <letters>\n<grid ref> <across/down> <word>  e.g. A1 A HELLO");
+			System.out.println("Legal options:\nQUIT\nHELP\nPASS\nEXCHANGE <letters>\n<grid ref> <across/down> <word>  e.g. A1 A HELLO");
 		}
 		return ActionFactory.buildAction(nextAction);
 	}
 	
 	public void promptActivePlayer(String activePlayer){
-		System.out.println(activePlayer + "turn (enter \"HELP\" for legal options)");
+		System.out.println(activePlayer + "turn (enter \"HELP\" for help)");
+	}
+	
+	public boolean validateInput(String userInput) {
+		return userInput.matches("QUIT|PASS|HELP|EXCHANGE [A-Z]{1,7}|[A-O]([1-9]|1[0-5]) [AD] [A-Z ]{1,15}");
 	}
 }

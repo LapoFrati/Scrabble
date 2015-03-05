@@ -22,7 +22,7 @@ public class UIUnitTest {
 
         InputStream input = new ByteArrayInputStream(data);
 
-        assertEquals(Choice.QUIT, testUI.getUserInput(input, "TESTPLAYER").getChoice());
+        assertEquals(Choice.QUIT, testUI.getUserInput(input).getChoice());
 	}
 	
 	@Test
@@ -31,10 +31,9 @@ public class UIUnitTest {
 
         InputStream input = new ByteArrayInputStream(data);
 
-        assertEquals(Choice.PASSTURN, testUI.getUserInput(input, "TESTPLAYER").getChoice());
+        assertEquals(Choice.PASSTURN, testUI.getUserInput(input).getChoice());
 	}
 	
-	/*
 	@Test
 	public void validateInput_PASSTURN_TRUE(){
         assertTrue( testUI.validateInput("PASS"));
@@ -44,7 +43,6 @@ public class UIUnitTest {
 	public void validateInput_PASSTURN_FALSE(){
         assertFalse( testUI.validateInput("PAS"));
 	}
-	*/
 	
 	@Test
 	public void getUserInput_GETHELP(){
@@ -52,10 +50,9 @@ public class UIUnitTest {
 
         InputStream input = new ByteArrayInputStream(data);
 
-        assertEquals(Choice.GETHELP, testUI.getUserInput(input, "TESTPLAYER").getChoice());
+        assertEquals(Choice.GETHELP, testUI.getUserInput(input).getChoice());
 	}
 	
-	/*
 	@Test
 	public void validateInput_GETHELP_TRUE(){
         assertTrue( testUI.validateInput("HELP"));
@@ -65,7 +62,6 @@ public class UIUnitTest {
 	public void validateInput_GETHELP_FALSE(){
         assertFalse( testUI.validateInput("HELPP"));
 	}
-	*/
 	
 	@Test
 	public void getUserInput_PLACEWORD(){
@@ -73,10 +69,9 @@ public class UIUnitTest {
 
         InputStream input = new ByteArrayInputStream(data);
 
-        assertEquals(Choice.PLAYWORD, testUI.getUserInput(input, "TESTPLAYER").getChoice());
+        assertEquals(Choice.PLAYWORD, testUI.getUserInput(input).getChoice());
 	}
 	
-	/*
 	@Test
 	public void validateInput_PLACEWORD_TRUE(){
         assertTrue( testUI.validateInput("A1 A HELLO"));
@@ -96,7 +91,11 @@ public class UIUnitTest {
 	public void validateInput_PLACEWORD_FALSE_WRONGWORD(){
         assertFalse( testUI.validateInput("A1 A @@@@"));
 	}
-	*/
+	
+	@Test
+	public void validateInput_PLACEWORD_TRUE_SPACE(){
+        assertTrue( testUI.validateInput("A1 A HELLO WORLD"));
+	}
 	
 	@Test
 	public void getUserInput_EXCHANGELETTERS(){
@@ -104,10 +103,9 @@ public class UIUnitTest {
 
         InputStream input = new ByteArrayInputStream(data);
 
-        assertEquals(Choice.EXCHANGELETTERS, testUI.getUserInput(input, "TESTPLAYER").getChoice());
+        assertEquals(Choice.EXCHANGELETTERS, testUI.getUserInput(input).getChoice());
 	}
 	
-	/*
 	@Test
 	public void validateInput_EXCHANGELETTERS_TRUE(){
         assertTrue( testUI.validateInput("EXCHANGE ABC"));
@@ -127,5 +125,4 @@ public class UIUnitTest {
 	public void validateInput_EXCHANGELETTERS_FALSE_WORDTOOLONG(){
         assertFalse( testUI.validateInput("EXCHANGE ABCDEFGHIJKLMNOPQRSTUVXYZ"));
 	}
-	*/
 }
