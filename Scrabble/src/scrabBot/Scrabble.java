@@ -65,6 +65,7 @@ public class Scrabble {
 			if(Board.wordMultiplier[x][y] != 1)
 			{
 				wordMult = Board.wordMultiplier[x][y];
+				Board.wordMultiplier[x][y] = 1; //So this word multiplier is only applied once if other words use same letter
 			}
 			x++;
 			}
@@ -73,6 +74,7 @@ public class Scrabble {
 				if(Board.wordMultiplier[x][y] != 1)
 				{
 					wordMult = Board.wordMultiplier[x][y];
+					Board.wordMultiplier[x][y] = 1; //So this word multiplier is only applied once if other words use same letter
 				}
 				y++;
 			}
@@ -86,11 +88,13 @@ public class Scrabble {
 			if(dir == Direction.VERTICAL)
 			{
 					total = total + pool.checkValue(board.getLetterAt(x,y)) * Board.letterMultiplier[x][y] * wordMult;
+					Board.letterMultiplier[x][y] = 1; //So this letter multiplier is only applied once if other words use same letter
 					x++;
 			}
 			else
 			{
 				total = total + pool.checkValue(board.getLetterAt(x,y)) * Board.letterMultiplier[x][y] * wordMult;
+				Board.letterMultiplier[x][y] = 1; //So this letter multiplier is only applied once if other words use same letter
 				y++;
 			}
 		}
