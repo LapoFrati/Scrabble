@@ -24,7 +24,7 @@ public class ScrabbleUnitTest {
 	
 	@Test
 	public void testCalculatePlacementPoints_2 () {
-		scrabble.calculatePlacementPoints("BOBCAT", Board.CENTER_ROW, Board.CENTER_COLUMN - 7, Direction.HORIZONTAL);
-		assertEquals(scrabble.activePlayer.getPlayerScore(), 15);
+		scrabble.calculatePlacementPoints("SKYJACK", 2, 4, Direction.VERTICAL);
+		assertEquals(scrabble.activePlayer.getPlayerScore(), 119);
 	}
 }

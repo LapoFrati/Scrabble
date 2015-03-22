@@ -82,13 +82,19 @@ public class Scrabble {
 	 * 
 	 * */
 	public void calculatePlacementPoints(String wordPlayed, int row, int column, Direction dir){
-		int total = 0;
-		int wordMult = 1;
+		int total = 0, otherWordsTotal = 0, wordMult = 1, lettersUsed = 0;
 		
-		for(int i = 0, len = wordPlayed.length(); i < len; i++) {
+		for(int i = 0; i < wordPlayed.length(); i++) {
 			if (board.getLetterAt(row, column) == Board.FREE_LOCATION) {
+				lettersUsed++;
 				wordMult *= Board.wordMultiplier[row][column];
 				total += Board.letterMultiplier[row][column] * pool.checkValue(wordPlayed.charAt(i));
+				if (dir == Direction.VERTICAL && (board.getLetterAt(row-1, column) != Board.FREE_LOCATION || board.getLetterAt(row+1, column) != Board.FREE_LOCATION)) {
+					otherWordsTotal += calculateOtherWordsPoints(row, column, Direction.HORIZONTAL);
+				}
+				else if (board.getLetterAt(row, column-1) != Board.FREE_LOCATION || board.getLetterAt(row, column+1) != Board.FREE_LOCATION) {
+					otherWordsTotal += calculateOtherWordsPoints(row, column, Direction.VERTICAL);
+				}
 			}
 			else {
 				total += pool.checkValue(wordPlayed.charAt(i));
@@ -101,7 +107,9 @@ public class Scrabble {
 		
 		total *= wordMult;
 		
-		if (wordPlayed.length() == 7) {
+		total += otherWordsTotal;
+		
+		if (lettersUsed == 7) {
 			total += 50;
 		}
 
@@ -127,5 +135,50 @@ public class Scrabble {
 			frame.refillFrame(pool);
 		}
 		return result;
-	}	
+	}
+	
+	private int calculateOtherWordsPoints(int row, int column, Direction dir){
+		int total = 0, newRow = row, newColumn = column, diff = 0;
+		char newChar;
+		String newWord = "";
+		
+		if (dir == Direction.HORIZONTAL) {
+			int tempColumn;
+			while (board.getLetterAt(row, newColumn-1) != Board.FREE_LOCATION)
+				newColumn--;
+			diff = column - newColumn;
+			tempColumn = newColumn;
+			while ((newChar = board.getLetterAt(row, tempColumn)) != Board.FREE_LOCATION) {
+				newWord += newChar;
+				tempColumn++;
+			}
+		}
+		else {
+			int tempRow;
+			while (board.getLetterAt(newRow-1, column) != Board.FREE_LOCATION)
+				newRow--;
+			diff = row - newRow;
+			tempRow = newRow;
+			while ((newChar = board.getLetterAt(tempRow, column)) != Board.FREE_LOCATION) {
+				newWord += newChar;
+				tempRow++;
+			}
+		}
+		
+		for(int i = 0; i < newWord.length(); i++) {
+			if (i==diff)
+				total += pool.checkValue(newWord.charAt(i)) * Board.letterMultiplier[row][column];
+			else
+				total += pool.checkValue(newWord.charAt(i));
+			if(dir == Direction.VERTICAL)
+				newRow++;
+			else
+				newColumn++;
+		}
+		
+		
+		total *= Board.wordMultiplier[row][column];
+
+		return total;
+	}
 }
