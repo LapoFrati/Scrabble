@@ -6,7 +6,6 @@ public class Scrabble {
 	protected Player P2;
 	protected Board board;
 	protected Pool pool;
-	protected int row;
 	protected Player activePlayer;
 	protected UI ui;
 	protected boolean keepPlaying, proceed;
