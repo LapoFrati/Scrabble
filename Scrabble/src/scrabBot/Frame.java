@@ -25,6 +25,24 @@ public class Frame {
 		return frame.contains(letter);		
 	}
 	
+	public boolean removeLetters(String letters){
+		for(Character ch : letters.toCharArray()){
+			if(frame.remove(ch) == false)
+				return false;
+		}
+		return true;
+	}
+	
+	public boolean containsLetters(String letters){
+		@SuppressWarnings("unchecked")
+		ArrayList<Character> temp = (ArrayList<Character>)frame.clone();
+		for(Character ch : temp){
+			if(temp.remove(ch) == false)
+				return false;
+		}
+		return true;
+	}
+	
 	public int getFrameSize(){
 		return frame.size();
 	}
