@@ -15,13 +15,21 @@ public class UI {
 		nextAction = sc.nextLine();
 		while(!validateInput(nextAction)) {
 			nextAction = sc.nextLine();
-			System.out.println("Legal options:\nQUIT\nHELP\nPASS\nEXCHANGE <letters>\n<grid ref> <across/down> <word>  e.g. A1 A HELLO");
 		}
 		return ActionFactory.buildAction(nextAction);
 	}
 	
-	public void promptActivePlayer(String activePlayer){
-		System.out.println(activePlayer + "turn (enter \"HELP\" for help)");
+	public void gameInfo(Scrabble scrabble){
+		scrabble.board.displayBoard();
+		System.out.println(scrabble.P1.getPlayerName()+" : "+scrabble.P1.getPlayerScore());
+		System.out.println(scrabble.P2.getPlayerName()+" : "+scrabble.P2.getPlayerScore());
+		System.out.println();
+	}
+	
+	public void promptActivePlayer(Player activePlayer,Board board){
+		System.out.println(activePlayer.getPlayerName() + "'s turn. (enter \"HELP\" for help)");
+		System.out.print("Frame: ");
+		activePlayer.getPlayerFrame().showFrame();
 	}
 	
 	public boolean validateInput(String userInput) {

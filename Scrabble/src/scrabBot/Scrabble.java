@@ -12,10 +12,12 @@ public class Scrabble {
 	protected Action playerChoice;
 	
 	public Scrabble(){
+		pool = new Pool();
+		board = new Board();
 		P1 = new Player();
 		P2 = new Player();
-		board = new Board();
-		pool = new Pool();
+		P1.getPlayerFrame().refillFrame(pool);
+		P2.getPlayerFrame().refillFrame(pool);
 		activePlayer = P1;
 		ui = new UI();
 		keepPlaying = true;
@@ -24,8 +26,8 @@ public class Scrabble {
 
 	public void startGame(){
 		while(keepPlaying){
-			
-			ui.promptActivePlayer(activePlayer.getPlayerName());
+			ui.gameInfo(this);
+			ui.promptActivePlayer(activePlayer,board);
 			proceed = false;
 			while(!proceed){
 				playerChoice = ui.getUserInput(System.in);
@@ -111,7 +113,7 @@ public class Scrabble {
 	}
 	
 	private void displayHelp(){
-		//TODO: ask what information has to be printed
+		System.out.println("Legal options:\nQUIT\nHELP\nPASS\nEXCHANGE <letters>\n<grid ref> <across/down> <word>  e.g. A1 A HELLO");
 	}
 	
 	
