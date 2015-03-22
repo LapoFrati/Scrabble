@@ -10,8 +10,9 @@ public class IntegrationTests {
 		Pool myPool = new Pool();
 		Player P1 = new Player();
 		Frame frame = P1.getPlayerFrame();
+		Scrabble scrabble = new Scrabble();
 		
-		System.out.println("\nStarting Integration Tests: \n");
+		System.out.println("\nStarting Automated Integration Tests: \n");
 		
 		System.out.println("Pool's size: "+ myPool.getPoolSize());
 		frame.refillFrame(myPool);
@@ -34,7 +35,9 @@ public class IntegrationTests {
 		frame.showFrame();
 		System.out.println();
 		
-		System.out.println("Integration Test Completed");
+		System.out.println("Automated Integration Test Completed");
+		
+		scrabble.startGame();
 	}
 
 }
