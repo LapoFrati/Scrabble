@@ -61,8 +61,9 @@ public class Frame {
 	}
 	
 	public void showFrame() {
+		System.out.print("-");
 		for( Character letter : frame){
-			System.out.print(letter+" ");
+			System.out.print(letter+"-");
 		}
 		System.out.println();
 	}
