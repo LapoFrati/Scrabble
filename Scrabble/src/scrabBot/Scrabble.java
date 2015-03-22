@@ -79,60 +79,30 @@ public class Scrabble {
 	 * remember the bonus points for using all the letters!
 	 * 
 	 * */
-	public void calculatePlacementPoints(String wordPlayed, int xCord, int yCord, Direction dir){
+	public void calculatePlacementPoints(String wordPlayed, int row, int column, Direction dir){
 		int total = 0;
-		int y = yCord;
-		int x = xCord;
 		int wordMult = 1;
-		if(wordPlayed.length() == 7)
-		{
-			total = 50;
+		
+		for(int i = 0, len = wordPlayed.length(); i < len; i++) {
+			if (board.getLetterAt(row, column) == Board.FREE_LOCATION) {
+				wordMult *= Board.wordMultiplier[row][column];
+				total += Board.letterMultiplier[row][column] * pool.checkValue(wordPlayed.charAt(i));
+			}
+			else {
+				total += pool.checkValue(wordPlayed.charAt(i));
+			}
+			if(dir == Direction.VERTICAL)
+				row++;
+			else
+				column++;
 		}
 		
-			if(dir == Direction.VERTICAL)
-				x++;
-			else
-				y++;
-		for(int i = 0; i < wordPlayed.length(); i++)
-		{
-			if(dir == Direction.VERTICAL)
-			{
-			if(Board.wordMultiplier[x][y] != 1)
-			{
-				wordMult = Board.wordMultiplier[x][y];
-				Board.wordMultiplier[x][y] = 1; //So this word multiplier is only applied once if other words use same letter
-			}
-			x++;
-			}
-			else
-			{
-				if(Board.wordMultiplier[x][y] != 1)
-				{
-					wordMult = Board.wordMultiplier[x][y];
-					Board.wordMultiplier[x][y] = 1; //So this word multiplier is only applied once if other words use same letter
-				}
-				y++;
-			}
-		}
+		total *= wordMult;
 		
-	x = xCord;
-	y = yCord;
-	
-		for(int j = 0; j < wordPlayed.length(); j++)
-		{
-			if(dir == Direction.VERTICAL)
-			{
-					total = total + pool.checkValue(board.getLetterAt(x,y)) * Board.letterMultiplier[x][y] * wordMult;
-					Board.letterMultiplier[x][y] = 1; //So this letter multiplier is only applied once if other words use same letter
-					x++;
-			}
-			else
-			{
-				total = total + pool.checkValue(board.getLetterAt(x,y)) * Board.letterMultiplier[x][y] * wordMult;
-				Board.letterMultiplier[x][y] = 1; //So this letter multiplier is only applied once if other words use same letter
-				y++;
-			}
+		if (wordPlayed.length() == 7) {
+			total += 50;
 		}
+
 		activePlayer.increasePlayerScoreBy(total);
 	}
 	
