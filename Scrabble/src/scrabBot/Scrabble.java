@@ -89,11 +89,11 @@ public class Scrabble {
 				lettersUsed++;
 				wordMult *= Board.wordMultiplier[row][column];
 				total += Board.letterMultiplier[row][column] * pool.checkValue(wordPlayed.charAt(i));
-				if (dir == Direction.VERTICAL && (board.getLetterAt(row-1, column) != Board.FREE_LOCATION || board.getLetterAt(row+1, column) != Board.FREE_LOCATION)) {
-					otherWordsTotal += calculateOtherWordsPoints(row, column, Direction.HORIZONTAL);
+				if (dir == Direction.VERTICAL && (board.getLetterAt(row, column-1) != Board.FREE_LOCATION || board.getLetterAt(row, column+1) != Board.FREE_LOCATION)) {
+					otherWordsTotal += calculateOtherWordsPoints(wordPlayed.charAt(i), row, column, Direction.HORIZONTAL);
 				}
-				else if (board.getLetterAt(row, column-1) != Board.FREE_LOCATION || board.getLetterAt(row, column+1) != Board.FREE_LOCATION) {
-					otherWordsTotal += calculateOtherWordsPoints(row, column, Direction.VERTICAL);
+				else if (board.getLetterAt(row-1, column) != Board.FREE_LOCATION || board.getLetterAt(row+1, column) != Board.FREE_LOCATION) {
+					otherWordsTotal += calculateOtherWordsPoints(wordPlayed.charAt(i), row, column, Direction.VERTICAL);
 				}
 			}
 			else {
@@ -137,10 +137,11 @@ public class Scrabble {
 		return result;
 	}
 	
-	private int calculateOtherWordsPoints(int row, int column, Direction dir){
+	private int calculateOtherWordsPoints(char startingLetter, int row, int column, Direction dir){
 		int total = 0, newRow = row, newColumn = column, diff = 0;
 		char newChar;
 		String newWord = "";
+		boolean finished = false, notPlacedLetterPassed = false;
 		
 		if (dir == Direction.HORIZONTAL) {
 			int tempColumn;
@@ -148,8 +149,17 @@ public class Scrabble {
 				newColumn--;
 			diff = column - newColumn;
 			tempColumn = newColumn;
-			while ((newChar = board.getLetterAt(row, tempColumn)) != Board.FREE_LOCATION) {
-				newWord += newChar;
+			while (!finished) {
+				if ((newChar = board.getLetterAt(row, tempColumn)) == Board.FREE_LOCATION) {
+					if (notPlacedLetterPassed)
+						finished = true;
+					else {
+						notPlacedLetterPassed = true;
+						newWord += startingLetter;
+					}
+				}
+				else
+					newWord += newChar;
 				tempColumn++;
 			}
 		}
@@ -159,8 +169,17 @@ public class Scrabble {
 				newRow--;
 			diff = row - newRow;
 			tempRow = newRow;
-			while ((newChar = board.getLetterAt(tempRow, column)) != Board.FREE_LOCATION) {
-				newWord += newChar;
+			while (!finished) {
+				if ((newChar = board.getLetterAt(tempRow, column)) == Board.FREE_LOCATION) {
+					if (notPlacedLetterPassed)
+						finished = true;
+					else {
+						notPlacedLetterPassed = true;
+						newWord += startingLetter;
+					}
+				}
+				else
+					newWord += newChar;
 				tempRow++;
 			}
 		}
@@ -175,7 +194,6 @@ public class Scrabble {
 			else
 				newColumn++;
 		}
-		
 		
 		total *= Board.wordMultiplier[row][column];
 
