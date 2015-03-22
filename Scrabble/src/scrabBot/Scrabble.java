@@ -6,10 +6,10 @@ public class Scrabble {
 	protected Player P2;
 	protected Board board;
 	protected Pool pool;
-	protected int scoreP1, scoreP2, row;
+	protected int row;
 	protected Player activePlayer;
 	protected UI ui;
-	protected boolean keepPlaying;
+	protected boolean keepPlaying, proceed;
 	protected Action playerChoice;
 	
 	public Scrabble(){
@@ -17,7 +17,6 @@ public class Scrabble {
 		P2 = new Player();
 		board = new Board();
 		pool = new Pool();
-		scoreP1 = scoreP2 = 0;
 		activePlayer = P1;
 		ui = new UI();
 		keepPlaying = true;
@@ -26,17 +25,54 @@ public class Scrabble {
 
 	public void startGame(){
 		while(keepPlaying){
-			board.displayBoard();
-			activePlayer.getPlayerFrame();
-			if(activePlayer == P1)
-			{
-				ui.promptActivePlayer("Player 1");
+			
+			ui.promptActivePlayer(activePlayer.getPlayerName());
+			proceed = false;
+			while(!proceed){
+				playerChoice = ui.getUserInput(System.in);
+				
+				switch(playerChoice.getChoice()){
+					case PLAYWORD:	PlayWord wordToPlace = (PlayWord) playerChoice;
+									CheckResult result = board.checkPlacement(wordToPlace.getWord(), 
+											wordToPlace.getRow(), 
+											wordToPlace.getColumn(), 
+											wordToPlace.getDirection(),
+											activePlayer);
+									if(result == CheckResult.OK){
+										
+										calculatePlacementPoints(wordToPlace.getWord(), 
+																 wordToPlace.getRow(),
+																 wordToPlace.getColumn(), 
+																 wordToPlace.getDirection());
+										board.placeWord(wordToPlace.getWord(), 
+														wordToPlace.getRow(), 
+														wordToPlace.getColumn(), 
+														wordToPlace.getDirection());
+										proceed = true;	
+									}
+									else
+										System.out.println("Invalid Placement. Error: "+result.name());
+									break;
+					case PASSTURN: 	proceed = true;
+									break;
+					case GETHELP:	displayHelp();
+									break;
+					case EXCHANGELETTERS:	proceed = exchangeLetters(((ExchangeLetters)playerChoice).getLettersToChange());
+											break;
+					case QUIT: 		quitGame();;
+									proceed = true;
+									System.out.println(activePlayer.getPlayerName() + " surrendered.");
+									break;
+				}
 			}
-			if(activePlayer == P2)
-			{
-				ui.promptActivePlayer("Player 2");
-			}
+			
+			passTurn();
+			
 		}
+	}
+	
+	public void passTurn(){
+		activePlayer = (activePlayer.equals(P1) ? P2 : P1 );
 	}
 	
 	/* updates the score of the active player
@@ -105,20 +141,20 @@ public class Scrabble {
 		keepPlaying = false;
 	}
 	
-	//changes the active player
-	private void passTurn(){
-		if(activePlayer == P1)
-			activePlayer = P2;
-		else
-			activePlayer = P1;
-	}
-	
 	private void displayHelp(){
 		//TODO: ask what information has to be printed
 	}
 	
+	
 	//use the frame of the active player
-	private void exchangeLetters( String oldLetters ){
-		
+	private boolean exchangeLetters( String lettersToExchange ){
+		Frame frame = activePlayer.getPlayerFrame();
+		boolean result;
+		result = frame.containsLetters(lettersToExchange);
+		if(result){
+			frame.removeLetters(lettersToExchange);
+			frame.refillFrame(pool);
+		}
+		return result;
 	}	
 }
