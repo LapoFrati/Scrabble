@@ -36,7 +36,7 @@ public class Frame {
 	public boolean containsLetters(String letters){
 		@SuppressWarnings("unchecked")
 		ArrayList<Character> temp = (ArrayList<Character>)frame.clone();
-		for(Character ch : temp){
+		for(Character ch : frame){
 			if(temp.remove(ch) == false)
 				return false;
 		}
