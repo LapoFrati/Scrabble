@@ -70,6 +70,6 @@ public class Pool implements Cloneable{
 		if(letterValues.containsKey(letter))
 			return letterValues.get(letter);
 		else
-			throw new WrongLetterException("The selected letter does not appear in the game.");
+			throw new WrongLetterException("The letter -"+letter+"- does not appear in the game.");
 	}
 }

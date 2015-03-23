@@ -13,5 +13,6 @@ public class MockScrabble extends Scrabble {
 		activePlayer = P1;
 		ui = new UI();
 		keepPlaying = true;
+		dict = new Dictionary();
 	}
 }

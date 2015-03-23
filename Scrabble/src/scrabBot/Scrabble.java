@@ -15,6 +15,7 @@ public class Scrabble {
 	protected UI ui;
 	protected boolean keepPlaying, proceed;
 	protected Action playerChoice;
+	protected Dictionary dict;
 	
 	public Scrabble(){
 		pool = new Pool();
@@ -26,6 +27,7 @@ public class Scrabble {
 		activePlayer = P1;
 		ui = new UI();
 		keepPlaying = true;
+		dict = new Dictionary();
 	}
 	
 
@@ -44,7 +46,7 @@ public class Scrabble {
 											wordToPlace.getColumn(), 
 											wordToPlace.getDirection(),
 											activePlayer);
-									if(result == CheckResult.OK){
+									if((result == CheckResult.OK) && dict.dictionaryCheck(wordToPlace.getWord())){
 										
 										calculatePlacementPoints(wordToPlace.getWord(), 
 																 wordToPlace.getRow(),
@@ -64,8 +66,10 @@ public class Scrabble {
 													System.out.println("Letters in the pool finished.");
 												}
 										} else {
-											keepPlaying = false;
-											endGame();
+											if(activePlayer.getPlayerFrame().getFrameSize() == 0){
+												keepPlaying = false;
+												endGame();
+											}
 										}
 										
 										proceed = true;	
@@ -107,6 +111,8 @@ public class Scrabble {
 			activePlayer.increasePlayerScoreBy(pool.checkValue(letter));
 			otherPlayer.increasePlayerScoreBy(-pool.checkValue(letter));
 		}
+		
+		ui.gameInfo(this);
 		
 		if(activePlayer.getPlayerScore() > otherPlayer.getPlayerScore())
 			System.out.println("The winner is "+activePlayer.getPlayerName());
