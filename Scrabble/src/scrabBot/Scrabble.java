@@ -3,6 +3,8 @@
  */
 package scrabBot;
 
+import java.util.ArrayList;
+
 public class Scrabble {
 	
 	protected Player P1;
@@ -53,7 +55,19 @@ public class Scrabble {
 														wordToPlace.getColumn(), 
 														wordToPlace.getDirection());
 										activePlayer.getPlayerFrame().removeLetters(wordToPlace.getWord());
-										activePlayer.getPlayerFrame().refillFrame(pool);
+										
+										
+										if(pool.getPoolSize() != 0){
+												try{
+													activePlayer.getPlayerFrame().refillFrame(pool);
+												} catch (EmptyPoolException e){
+													System.out.println("Letters in the pool finished.");
+												}
+										} else {
+											keepPlaying = false;
+											endGame();
+										}
+										
 										proceed = true;	
 									}
 									else
@@ -66,7 +80,7 @@ public class Scrabble {
 					case EXCHANGELETTERS:	if(pool.getPoolSize() >= 7)
 												proceed = exchangeLetters(((ExchangeLetters)playerChoice).getLettersToChange());
 											else
-												System.out.println("Not enough letters remaining");			
+												System.out.println("Not enough letters remaining.");			
 											break;
 					case QUIT: 		quitGame();;
 									proceed = true;
@@ -78,6 +92,30 @@ public class Scrabble {
 			passTurn();
 			
 		}
+	}
+	private void endGame(){
+		ArrayList<Character> unusedLetters;
+		Player otherPlayer;
+		if(activePlayer.equals(P1))
+			otherPlayer = P2;
+		else
+			otherPlayer = P1;
+		
+		unusedLetters = otherPlayer.getPlayerFrame().getLetters();
+		
+		for(Character letter : unusedLetters){
+			activePlayer.increasePlayerScoreBy(pool.checkValue(letter));
+			otherPlayer.increasePlayerScoreBy(-pool.checkValue(letter));
+		}
+		
+		if(activePlayer.getPlayerScore() > otherPlayer.getPlayerScore())
+			System.out.println("The winner is "+activePlayer.getPlayerName());
+		else
+			if(activePlayer.getPlayerScore() < otherPlayer.getPlayerScore())
+				System.out.println("The winner is "+otherPlayer.getPlayerName());
+			else
+				System.out.println("TIE");
+		
 	}
 	
 	public void passTurn(){

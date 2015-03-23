@@ -59,11 +59,6 @@ public class PlayerUnitTest {
 		assertEquals(testPlayer.getPlayerScore(), EXPECTED_SCORE);
 	}
 	
-	@Test(expected=NegativeScoreException.class)
-	public void testIncreasePlayerScoreBy_raiseNegativeScoreException() {
-		testPlayer.increasePlayerScoreBy(-1);
-	}
-	
 	@Test
 	public void testGetPlayerScore() {
 		assertEquals(testPlayer.getPlayerScore(), INITIAL_SCORE);

@@ -41,12 +41,9 @@ public class Player {
 	}
 	
 	/* If the value is positive it increments the score by that amount, otherwise it throws an exception */
-	public void increasePlayerScoreBy(int value) throws NegativeScoreException
+	public void increasePlayerScoreBy(int value)
 	{
-		if(value >= 0)
 			this.playerScore = playerScore + value;
-		else
-			throw new NegativeScoreException("Score can't be negative.");
 	}
 	
 	public int getPlayerScore() {
