@@ -9,7 +9,7 @@ import java.util.HashMap;
 public class Pool implements Cloneable{
 	protected HashMap<Character,Integer> letterValues;
 	protected ArrayList<Character> pool;
-	protected final char[] letters = {' ','E','A','I','O','N','R','T','L','S','U','D','G','B','C','M','P','F','H','V','W','Y','K','J','X','Q','Z'};
+	protected final char[] letters = {'&','E','A','I','O','N','R','T','L','S','U','D','G','B','C','M','P','F','H','V','W','Y','K','J','X','Q','Z'};
 	protected final int[] values =   { 0 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 1 , 2 , 2 , 3 , 3 , 3 , 3 , 4 , 4 , 4 , 4 , 4 , 5 , 8 , 8 , 10, 10};
 	private final int[] copies =   { 2 , 12, 9 , 9 , 8 , 6 , 6 , 6 , 4 , 4 , 4 , 4 , 3 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 2 , 1 , 1 , 1 , 1 , 1 };
 	

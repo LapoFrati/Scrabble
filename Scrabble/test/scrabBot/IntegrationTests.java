@@ -10,7 +10,6 @@ public class IntegrationTests {
 		Pool myPool = new Pool();
 		Player P1 = new Player();
 		Frame frame = P1.getPlayerFrame();
-		Scrabble scrabble = new Scrabble();
 		
 		System.out.println("\nStarting Automated Integration Tests: \n");
 		
@@ -36,8 +35,6 @@ public class IntegrationTests {
 		System.out.println();
 		
 		System.out.println("Automated Integration Test Completed");
-		
-		scrabble.startGame();
 	}
 
 }

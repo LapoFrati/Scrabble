@@ -97,7 +97,7 @@ public class UIUnitTest {
 	
 	@Test
 	public void validateInput_PLACEWORD_TRUE_SPACE(){
-        assertTrue( testUI.validateInput("A1 A HELLO WORLD"));
+        assertTrue( testUI.validateInput("A1 A HELLO&WORLD"));
 	}
 	
 	@Test
