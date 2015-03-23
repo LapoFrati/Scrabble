@@ -52,6 +52,8 @@ public class Scrabble {
 														wordToPlace.getRow(), 
 														wordToPlace.getColumn(), 
 														wordToPlace.getDirection());
+										activePlayer.getPlayerFrame().removeLetters(wordToPlace.getWord());
+										activePlayer.getPlayerFrame().refillFrame(pool);
 										proceed = true;	
 									}
 									else
