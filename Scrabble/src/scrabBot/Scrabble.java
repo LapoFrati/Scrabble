@@ -63,7 +63,10 @@ public class Scrabble {
 									break;
 					case GETHELP:	displayHelp();
 									break;
-					case EXCHANGELETTERS:	proceed = exchangeLetters(((ExchangeLetters)playerChoice).getLettersToChange());
+					case EXCHANGELETTERS:	if(pool.getPoolSize() >= 7)
+												proceed = exchangeLetters(((ExchangeLetters)playerChoice).getLettersToChange());
+											else
+												System.out.println("Not enough letters remaining");			
 											break;
 					case QUIT: 		quitGame();;
 									proceed = true;
