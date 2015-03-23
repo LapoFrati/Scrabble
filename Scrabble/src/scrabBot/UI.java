@@ -24,6 +24,7 @@ public class UI {
 	
 	public void gameInfo(Scrabble scrabble){
 		scrabble.board.displayBoard();
+		System.out.println("Pool's size: "+scrabble.pool.getPoolSize());
 		System.out.println(scrabble.P1.getPlayerName()+" : "+scrabble.P1.getPlayerScore());
 		System.out.println(scrabble.P2.getPlayerName()+" : "+scrabble.P2.getPlayerScore());
 		System.out.println();
