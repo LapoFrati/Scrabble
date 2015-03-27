@@ -1,4 +1,5 @@
-package scrabBot;
+package action;
+
 
 public class ExchangeLetters extends Action {
 	private String lettersToChange;

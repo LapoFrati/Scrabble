@@ -1,4 +1,4 @@
-package scrabBot;
+package action;
 
 import java.util.Scanner;
 

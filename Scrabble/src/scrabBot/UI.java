@@ -6,6 +6,9 @@ package scrabBot;
 import java.io.InputStream;
 import java.util.Scanner;
 
+import action.Action;
+import action.ActionFactory;
+
 public class UI {
 	
 	private Scanner sc;

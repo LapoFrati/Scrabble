@@ -1,4 +1,5 @@
-package scrabBot;
+package action;
+
 
 public class Quit extends Action {
 	public Quit() {

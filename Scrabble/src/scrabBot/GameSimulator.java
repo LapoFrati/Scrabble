@@ -6,6 +6,9 @@ package scrabBot;
 public class GameSimulator {
 	public static void main(String[] args) {
 		Scrabble game = new Scrabble();
+		
+		RunUnitTests.main(args);
+		System.out.println();
 		game.startGame();
 	}
 }

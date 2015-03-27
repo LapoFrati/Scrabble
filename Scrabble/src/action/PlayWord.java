@@ -1,4 +1,6 @@
-package scrabBot;
+package action;
+
+import scrabBot.Direction;
 
 public class PlayWord extends Action {
 	private int row, column;

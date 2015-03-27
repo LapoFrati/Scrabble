@@ -1,4 +1,5 @@
-package scrabBot;
+package action;
+
 
 public abstract class Action {
 	private Choice playerChoice;

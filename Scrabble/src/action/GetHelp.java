@@ -1,4 +1,5 @@
-package scrabBot;
+package action;
+
 
 public class GetHelp extends Action {
 	GetHelp() {

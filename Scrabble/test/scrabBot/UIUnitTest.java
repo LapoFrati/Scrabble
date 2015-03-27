@@ -11,6 +11,8 @@ import java.io.InputStream;
 import org.junit.Before;
 import org.junit.Test;
 
+import action.Choice;
+
 public class UIUnitTest {
 	UI testUI;
 	
