@@ -29,6 +29,10 @@ public class UI {
 			System.out.print(msg);
 	}
 	
+	public String getPlayerName(){
+		return "TODO";
+	}
+	
 	public void gameInfo(Scrabble scrabble){
 		scrabble.board.displayBoard();
 		System.out.println("Pool's size: "+scrabble.pool.getPoolSize());

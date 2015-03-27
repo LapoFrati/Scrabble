@@ -17,6 +17,7 @@ public class Scrabble {
 	protected Action playerChoice;
 	protected Dictionary dict;
 	
+	
 	public Scrabble(){
 		pool = new Pool();
 		board = new Board();
@@ -32,6 +33,8 @@ public class Scrabble {
 	
 
 	public void startGame(){
+		P1.setPlayerName(ui.getPlayerName());
+		P2.setPlayerName(ui.getPlayerName());
 		while(keepPlaying){
 			ui.gameInfo(this);
 			ui.promptActivePlayer(activePlayer,board);

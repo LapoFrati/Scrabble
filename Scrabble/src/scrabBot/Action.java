@@ -10,5 +10,4 @@ public abstract class Action {
 	public Choice getChoice(){
 		return playerChoice;
 	}
-	
 }
