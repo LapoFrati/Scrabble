@@ -47,11 +47,6 @@ public class PlayerUnitTest {
 		testPlayer.setPlayerName(playerName);
 		assertEquals(testPlayer.getPlayerName(), playerName);
 	}
-	
-	@Test(expected=NullNameException.class)
-	public void testSetPlayer_raiseNullNameException(){
-		testPlayer.setPlayerName(null);
-	}
 
 	@Test
 	public void testIncreasePlayerScoreBy() {

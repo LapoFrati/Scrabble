@@ -136,15 +136,6 @@ public class PlayerTest {
 		else
 			System.out.println("\t\t\t\tFAIL");
 		
-		System.out.println("Testing set null name:");
-		System.out.println("Expecting NullNameException");
-		try{
-			testPlayer.setPlayerName(null);
-			System.out.println("\t\t\t\tFAIL");
-		}catch(NullNameException e){
-			System.out.println("\t\t\t\tOK");
-		}
-		
 		System.out.println("Testing increase score:");
 		playerExpectedScore = 42;
 		testPlayer.increasePlayerScoreBy(42);
@@ -155,15 +146,6 @@ public class PlayerTest {
 			System.out.println("\t\t\t\tOK");
 		else
 			System.out.println("\t\t\t\tFAIL");
-		
-		System.out.println("Testing negative score:");
-		System.out.println("Expecting NegativeScoreException");
-		try{
-			testPlayer.increasePlayerScoreBy(-42);
-			System.out.println("\t\t\t\tFAIL");
-		}catch(NegativeScoreException e){
-			System.out.println("\t\t\t\tOK");
-		}
 		
 		System.out.println("Testing reset Player Data:");
 		playerExpectedScore = 0;

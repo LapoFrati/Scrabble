@@ -29,11 +29,9 @@ public class Player {
 		this.frame = new Frame();
 	}
 	
-	public void setPlayerName(String playerName) throws NullNameException {
+	public void setPlayerName(String playerName){
 		if(playerName != null)
 			this.playerName = playerName;
-		else
-			throw new NullNameException("Name can't be null.");
 	}
 	
 	public String getPlayerName() {
