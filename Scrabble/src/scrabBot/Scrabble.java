@@ -63,7 +63,7 @@ public class Scrabble {
 												try{
 													activePlayer.getPlayerFrame().refillFrame(pool);
 												} catch (EmptyPoolException e){
-													System.out.println("Letters in the pool finished.");
+													ui.printMessage("Letters in the pool finished.", true);
 												}
 										} else {
 											if(activePlayer.getPlayerFrame().getFrameSize() == 0){
@@ -75,7 +75,7 @@ public class Scrabble {
 										proceed = true;	
 									}
 									else
-										System.out.println("Invalid Placement. Error: "+result.name());
+										ui.printMessage("Invalid Placement. Error: "+result.name(), true);
 									break;
 					case PASSTURN: 	proceed = true;
 									break;
@@ -84,11 +84,11 @@ public class Scrabble {
 					case EXCHANGELETTERS:	if(pool.getPoolSize() >= 7)
 												proceed = exchangeLetters(((ExchangeLetters)playerChoice).getLettersToChange());
 											else
-												System.out.println("Not enough letters remaining.");			
+												ui.printMessage("Not enough letters remaining", true);			
 											break;
 					case QUIT: 		quitGame();;
 									proceed = true;
-									System.out.println(activePlayer.getPlayerName() + " surrendered.");
+									ui.printMessage(activePlayer.getPlayerName() + " surrendered.", true);
 									break;
 				}
 			}
@@ -115,12 +115,12 @@ public class Scrabble {
 		ui.gameInfo(this);
 		
 		if(activePlayer.getPlayerScore() > otherPlayer.getPlayerScore())
-			System.out.println("The winner is "+activePlayer.getPlayerName());
+			ui.printMessage("The winner is "+activePlayer.getPlayerName(),true);
 		else
 			if(activePlayer.getPlayerScore() < otherPlayer.getPlayerScore())
-				System.out.println("The winner is "+otherPlayer.getPlayerName());
+				ui.printMessage("The winner is "+otherPlayer.getPlayerName(),true);
 			else
-				System.out.println("TIE");
+				ui.printMessage("TIE", true);
 		
 	}
 	

@@ -22,6 +22,13 @@ public class UI {
 		return ActionFactory.buildAction(nextAction);
 	}
 	
+	public void printMessage(String msg, boolean newline){
+		if(newline)
+			System.out.println(msg);
+		else
+			System.out.print(msg);
+	}
+	
 	public void gameInfo(Scrabble scrabble){
 		scrabble.board.displayBoard();
 		System.out.println("Pool's size: "+scrabble.pool.getPoolSize());
