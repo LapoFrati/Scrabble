@@ -16,36 +16,33 @@ import action.Choice;
 public class UIUnitTest {
 	UI testUI;
 	
-	@Before
-	public void setUp(){
-		testUI = new UI();
-	}
-	
 	@Test
 	public void getUserInput_QUIT(){
 		byte[] data = "QUIT".getBytes();
 
-        InputStream input = new ByteArrayInputStream(data);
-
-        assertEquals(Choice.QUIT, testUI.getUserInput(input).getChoice());
+        testUI = new UI(new ByteArrayInputStream(data));
+        
+        assertEquals(Choice.QUIT, testUI.getUserInput().getChoice());
 	}
 	
 	@Test
 	public void getUserInput_PASSTURN(){
 		byte[] data = "PASS".getBytes();
 
-        InputStream input = new ByteArrayInputStream(data);
+        testUI = new UI(new ByteArrayInputStream(data));
 
-        assertEquals(Choice.PASSTURN, testUI.getUserInput(input).getChoice());
+        assertEquals(Choice.PASSTURN, testUI.getUserInput().getChoice());
 	}
 	
 	@Test
 	public void validateInput_PASSTURN_TRUE(){
+        testUI = new UI(System.in);
         assertTrue( testUI.validateInput("PASS"));
 	}
 	
 	@Test
 	public void validateInput_PASSTURN_FALSE(){
+        testUI = new UI(System.in);
         assertFalse( testUI.validateInput("PAS"));
 	}
 	
@@ -53,18 +50,20 @@ public class UIUnitTest {
 	public void getUserInput_GETHELP(){
 		byte[] data = "HELP".getBytes();
 
-        InputStream input = new ByteArrayInputStream(data);
+        testUI = new UI(new ByteArrayInputStream(data));
 
-        assertEquals(Choice.GETHELP, testUI.getUserInput(input).getChoice());
+        assertEquals(Choice.GETHELP, testUI.getUserInput().getChoice());
 	}
 	
 	@Test
 	public void validateInput_GETHELP_TRUE(){
+        testUI = new UI(System.in);
         assertTrue( testUI.validateInput("HELP"));
 	}
 	
 	@Test
 	public void validateInput_GETHELP_FALSE(){
+        testUI = new UI(System.in);
         assertFalse( testUI.validateInput("HELPP"));
 	}
 	
@@ -72,33 +71,38 @@ public class UIUnitTest {
 	public void getUserInput_PLACEWORD(){
 		byte[] data = "A1 A HELLO".getBytes();
 
-        InputStream input = new ByteArrayInputStream(data);
+        testUI = new UI(new ByteArrayInputStream(data));
 
-        assertEquals(Choice.PLAYWORD, testUI.getUserInput(input).getChoice());
+        assertEquals(Choice.PLAYWORD, testUI.getUserInput().getChoice());
 	}
 	
 	@Test
 	public void validateInput_PLACEWORD_TRUE(){
+        testUI = new UI(System.in);
         assertTrue( testUI.validateInput("A1 A HELLO"));
 	}
 	
 	@Test
 	public void validateInput_PLACEWORD_FALSE_WRONGREF(){
+        testUI = new UI(System.in);
         assertFalse( testUI.validateInput("Z13 A HELLO"));
 	}
 	
 	@Test
 	public void validateInput_PLACEWORD_FALSE_WRONGDIR(){
+        testUI = new UI(System.in);
         assertFalse( testUI.validateInput("A1 P HELLO"));
 	}
 	
 	@Test
 	public void validateInput_PLACEWORD_FALSE_WRONGWORD(){
+        testUI = new UI(System.in);
         assertFalse( testUI.validateInput("A1 A @@@@"));
 	}
 	
 	@Test
 	public void validateInput_PLACEWORD_TRUE_SPACE(){
+        testUI = new UI(System.in);
         assertTrue( testUI.validateInput("A1 A HELLO&WORLD"));
 	}
 	
@@ -106,28 +110,32 @@ public class UIUnitTest {
 	public void getUserInput_EXCHANGELETTERS(){
 		byte[] data = "EXCHANGE ABC".getBytes();
 
-        InputStream input = new ByteArrayInputStream(data);
+		testUI = new UI(new ByteArrayInputStream(data));
 
-        assertEquals(Choice.EXCHANGELETTERS, testUI.getUserInput(input).getChoice());
+        assertEquals(Choice.EXCHANGELETTERS, testUI.getUserInput().getChoice());
 	}
 	
 	@Test
 	public void validateInput_EXCHANGELETTERS_TRUE(){
+        testUI = new UI(System.in);
         assertTrue( testUI.validateInput("EXCHANGE ABC"));
 	}
 	
 	@Test
 	public void validateInput_EXCHANGELETTERS_FALSE_WRONGCHOICE(){
+        testUI = new UI(System.in);
         assertFalse( testUI.validateInput("EXCHANG ABC"));
 	}
 	
 	@Test
 	public void validateInput_EXCHANGELETTERS_FALSE_WRONGWORD(){
+        testUI = new UI(System.in);
         assertFalse( testUI.validateInput("EXCHANGE @@@@"));
 	}
 	
 	@Test
 	public void validateInput_EXCHANGELETTERS_FALSE_WORDTOOLONG(){
+        testUI = new UI(System.in);
         assertFalse( testUI.validateInput("EXCHANGE ABCDEFGHIJKLMNOPQRSTUVXYZ"));
 	}
 }
