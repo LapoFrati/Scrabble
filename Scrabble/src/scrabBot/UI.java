@@ -44,6 +44,14 @@ public class UI {
 		System.out.println();
 	}
 	
+	public boolean checkChallenge(Player[] players, int currentPlayer){
+		return false;
+	}
+	
+	public int getNumberOfPlayers(){
+		return 2;
+	}
+	
 	public void promptActivePlayer(Player activePlayer,Board board){
 		System.out.println(activePlayer.getPlayerName() + "'s turn. (enter \"HELP\" for help)");
 		System.out.print("Frame: ");

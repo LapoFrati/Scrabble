@@ -58,64 +58,71 @@ public class Scrabble {
 			proceed = false;
 			while(!proceed){
 				playerChoice = ui.getUserInput(System.in);
-				
-				switch(playerChoice.getChoice()){
-					case PLAYWORD:	PlayWord wordToPlace = (PlayWord) playerChoice;
-									CheckResult result = board.checkPlacement(wordToPlace.getWord(), 
-											wordToPlace.getRow(), 
-											wordToPlace.getColumn(), 
-											wordToPlace.getDirection(),
-											activePlayer);
-									if((result == CheckResult.OK) && dict.dictionaryCheck(wordToPlace.getWord())){
-										stagingBoard = board;
-										
-										moveValue = calculatePlacementPoints(	wordToPlace.getWord(), 
-																				wordToPlace.getRow(),
-																				wordToPlace.getColumn(), 
-																				wordToPlace.getDirection());
-										
-										stagingBoard.placeWord(	wordToPlace.getWord(), 
-																wordToPlace.getRow(), 
-																wordToPlace.getColumn(), 
-																wordToPlace.getDirection());
-										
-										activePlayer.increasePlayerScoreBy(moveValue);
-										
-										
-										
-										if(pool.getPoolSize() != 0){
-												try{
-													activePlayer.getPlayerFrame().refillFrame(pool);
-												} catch (EmptyPoolException e){
-													ui.printMessage("Letters in the pool finished.", true);
-												}
-										} else {
-											if(activePlayer.getPlayerFrame().getFrameSize() == 0){
-												keepPlaying = false;
-												endGame();
-											}
-										}
-										
-										proceed = true;
-									}
-									else
-										ui.printMessage("Invalid Placement. Error: "+result.name(), true);
-									break;
-					case PASSTURN: 	proceed = true;
-									break;
-					case GETHELP:	displayHelp();
-									break;
-					case EXCHANGELETTERS:	if(pool.getPoolSize() >= 7)
-												proceed = exchangeLetters(((ExchangeLetters)playerChoice).getLettersToChange());
-											else
-												ui.printMessage("Not enough letters remaining", true);			
-											break;
-					case QUIT: 		quitGame();;
-									proceed = true;
-									ui.printMessage(activePlayer.getPlayerName() + " surrendered.", true);
-									break;
-				default:	break;
+				if(activePlayer.checkIfLostChallenge()){
+					activePlayer.resetLostChallenge();
+					proceed = true;
 				}
+				else
+					switch(playerChoice.getChoice()){
+						case PLAYWORD:	PlayWord wordToPlace = (PlayWord) playerChoice;
+										CheckResult result = board.checkPlacement(wordToPlace.getWord(), 
+												wordToPlace.getRow(), 
+												wordToPlace.getColumn(), 
+												wordToPlace.getDirection(),
+												activePlayer);
+										if((result == CheckResult.OK) && dict.dictionaryCheck(wordToPlace.getWord())){
+											stagingBoard = board;
+											
+											moveValue = calculatePlacementPoints(	wordToPlace.getWord(), 
+																					wordToPlace.getRow(),
+																					wordToPlace.getColumn(), 
+																					wordToPlace.getDirection());
+											
+											stagingBoard.placeWord(	wordToPlace.getWord(), 
+																	wordToPlace.getRow(), 
+																	wordToPlace.getColumn(), 
+																	wordToPlace.getDirection());
+											
+											activePlayer.increasePlayerScoreBy(moveValue);
+											
+
+											if(ui.checkChallenge(turn, currentPlayerNumber)){
+												//TODO: refund letters if challenge succeeded
+											}
+											else
+												if(pool.getPoolSize() != 0){
+														try{
+															activePlayer.getPlayerFrame().refillFrame(pool);
+														} catch (EmptyPoolException e){
+															ui.printMessage("Letters in the pool finished.", true);
+														}
+												} else {
+													if(activePlayer.getPlayerFrame().getFrameSize() == 0){
+														keepPlaying = false;
+														endGame();
+													}
+												}
+											
+											proceed = true;
+										}
+										else
+											ui.printMessage("Invalid Placement. Error: "+result.name(), true);
+										break;
+						case PASSTURN: 	proceed = true;
+										break;
+						case GETHELP:	displayHelp();
+										break;
+						case EXCHANGELETTERS:	if(pool.getPoolSize() >= 7)
+													proceed = exchangeLetters(((ExchangeLetters)playerChoice).getLettersToChange());
+												else
+													ui.printMessage("Not enough letters remaining", true);			
+												break;
+						case QUIT: 		quitGame();;
+										proceed = true;
+										ui.printMessage(activePlayer.getPlayerName() + " surrendered.", true);
+										break;
+						default:	break;
+					}
 			}
 			passTurn();	
 	}
