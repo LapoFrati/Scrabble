@@ -4,6 +4,12 @@
 package scrabBot;
 
 import java.util.ArrayList;
+import java.util.Random;
+
+import action.Action;
+import action.Choice;
+import action.ExchangeLetters;
+import action.PlayWord;
 
 public class Scrabble {
 	
@@ -12,20 +18,21 @@ public class Scrabble {
 	protected Board board;
 	protected Pool pool;
 	protected Player activePlayer;
+	protected int currentPlayerNumber;
 	protected UI ui;
 	protected boolean keepPlaying, proceed;
 	protected Action playerChoice;
 	protected Dictionary dict;
+	protected Player[] turn;
+	private Board stagingBoard;
+	private int moveValue;
+	private Random rand;
 	
+	private int NUM_PLAYERS;
 	
 	public Scrabble(){
 		pool = new Pool();
 		board = new Board();
-		P1 = new Player();
-		P2 = new Player();
-		P1.getPlayerFrame().refillFrame(pool);
-		P2.getPlayerFrame().refillFrame(pool);
-		activePlayer = P1;
 		ui = new UI();
 		keepPlaying = true;
 		dict = new Dictionary();
@@ -33,8 +40,18 @@ public class Scrabble {
 	
 
 	public void startGame(){
-		P1.setPlayerName(ui.getPlayerName());
-		P2.setPlayerName(ui.getPlayerName());
+		NUM_PLAYERS = ui.getNumberOfPlayers();
+		
+		turn = new Player[NUM_PLAYERS];
+		for(int i = 0; i<NUM_PLAYERS; i++){
+			turn[i] = new Player();
+			turn[i].setPlayerName(ui.getPlayerName());
+			turn[i].getPlayerFrame().refillFrame(pool);
+		}
+		
+		currentPlayerNumber = rand.nextInt(NUM_PLAYERS+1);
+		activePlayer = turn[currentPlayerNumber];
+		
 		while(keepPlaying){
 			ui.gameInfo(this);
 			ui.promptActivePlayer(activePlayer,board);
@@ -50,16 +67,20 @@ public class Scrabble {
 											wordToPlace.getDirection(),
 											activePlayer);
 									if((result == CheckResult.OK) && dict.dictionaryCheck(wordToPlace.getWord())){
+										stagingBoard = board;
 										
-										calculatePlacementPoints(wordToPlace.getWord(), 
-																 wordToPlace.getRow(),
-																 wordToPlace.getColumn(), 
-																 wordToPlace.getDirection());
-										board.placeWord(wordToPlace.getWord(), 
-														wordToPlace.getRow(), 
-														wordToPlace.getColumn(), 
-														wordToPlace.getDirection());
-										activePlayer.getPlayerFrame().removeLetters(wordToPlace.getWord());
+										moveValue = calculatePlacementPoints(	wordToPlace.getWord(), 
+																				wordToPlace.getRow(),
+																				wordToPlace.getColumn(), 
+																				wordToPlace.getDirection());
+										
+										stagingBoard.placeWord(	wordToPlace.getWord(), 
+																wordToPlace.getRow(), 
+																wordToPlace.getColumn(), 
+																wordToPlace.getDirection());
+										
+										activePlayer.increasePlayerScoreBy(moveValue);
+										
 										
 										
 										if(pool.getPoolSize() != 0){
@@ -75,7 +96,7 @@ public class Scrabble {
 											}
 										}
 										
-										proceed = true;	
+										proceed = true;
 									}
 									else
 										ui.printMessage("Invalid Placement. Error: "+result.name(), true);
@@ -93,13 +114,13 @@ public class Scrabble {
 									proceed = true;
 									ui.printMessage(activePlayer.getPlayerName() + " surrendered.", true);
 									break;
+				default:	break;
 				}
 			}
-			
-			passTurn();
-			
-		}
+			passTurn();	
 	}
+}
+	
 	private void endGame(){
 		ArrayList<Character> unusedLetters;
 		Player otherPlayer;
@@ -127,16 +148,16 @@ public class Scrabble {
 		
 	}
 	
-	public void passTurn(){
-		activePlayer = (activePlayer.equals(P1) ? P2 : P1 );
+	private void passTurn(){
+		currentPlayerNumber = (currentPlayerNumber + 1)%NUM_PLAYERS;
+		activePlayer = turn[currentPlayerNumber];
 	}
 	
-	/* updates the score of the active player
-	 * 
-	 * remember the bonus points for using all the letters!
-	 * 
-	 * */
-	public void calculatePlacementPoints(String wordPlayed, int row, int column, Direction dir){
+	private Player previousPlayer(){
+		return turn[(currentPlayerNumber-1)%NUM_PLAYERS];
+	}
+	
+	public int calculatePlacementPoints(String wordPlayed, int row, int column, Direction dir){
 		int total = 0, otherWordsTotal = 0, wordMult = 1, lettersUsed = 0;
 		
 		for(int i = 0; i < wordPlayed.length(); i++) {
@@ -168,7 +189,7 @@ public class Scrabble {
 			total += 50;
 		}
 
-		activePlayer.increasePlayerScoreBy(total);
+		return total;
 	}
 	
 	private void quitGame(){
