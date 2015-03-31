@@ -6,8 +6,6 @@ package scrabBot;
 import java.io.InputStream;
 import java.util.Scanner;
 
-import com.sun.corba.se.spi.orbutil.fsm.Input;
-
 import action.Action;
 import action.ActionFactory;
 
@@ -60,24 +58,33 @@ public class UI {
 	public int checkChallenge(Player[] players, int currentPlayer){
 		boolean decided = false;
 		int challengerNumber = -1;
-		System.out.println("Challenge? Y your_name / N");
 		sc = new Scanner(source);
 		while (!decided) {
+			System.out.println("Challenge? Y your_name / N");
 			String answer = sc.nextLine();
 			while (!answer.matches("Y *|N")) {
 				System.out.println("Error: incorrect answer format");
 				System.out.println("Challenge? Y your_name / N");
 				answer = sc.nextLine();
 			}
-			if (answer == "N")
+			if (answer == "N") {
+				challengerNumber = -1;
 				decided = true;
+			}
 			else {
 				answer = answer.substring(2);
-				for (int i=0; i<players.length; i++)
+				int i = 0;
+				for (; i < players.length; i++)
 					if (answer == players[i].getPlayerName()) {
 						challengerNumber = i;
 						decided = true;
 					}
+				if (!decided)
+					System.out.println("Error: no player named " + answer + " found");
+				if (i == currentPlayer) {
+					System.out.println("Error: you can not challenge yourself");
+					decided = false;
+				}		
 			}
 		}
 		return challengerNumber;
