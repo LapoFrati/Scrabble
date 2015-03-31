@@ -18,31 +18,36 @@ public class ScrabbleUnitTest {
 	
 	@Test
 	public void testCalculatePlacementPoints_JOIN () {
-		scrabble.calculatePlacementPoints("BOBCAT", Board.CENTER_ROW, Board.CENTER_COLUMN - 7, Direction.HORIZONTAL);
+		int moveValue = scrabble.calculatePlacementPoints("BOBCAT", Board.CENTER_ROW, Board.CENTER_COLUMN - 7, Direction.HORIZONTAL);
+		scrabble.activePlayer.increasePlayerScoreBy(moveValue);
 		assertEquals(15, scrabble.activePlayer.getPlayerScore());
 	}
 	
 	@Test
 	public void testCalculatePlacementPoints_BONUS_AND_NEAR () {
-		scrabble.calculatePlacementPoints("SKYJACK", 3, 4, Direction.VERTICAL);
+		int moveValue = scrabble.calculatePlacementPoints("SKYJACK", 3, 4, Direction.VERTICAL);
+		scrabble.activePlayer.increasePlayerScoreBy(moveValue);
 		assertEquals(118, scrabble.activePlayer.getPlayerScore());
 	}
 	
 	@Test
 	public void testCalculatePlacementPoints_CROSS () {
-		scrabble.calculatePlacementPoints("CYAN", 6, 9, Direction.VERTICAL);
+		int moveValue = scrabble.calculatePlacementPoints("CYAN", 6, 9, Direction.VERTICAL);
+		scrabble.activePlayer.increasePlayerScoreBy(moveValue);
 		assertEquals(14, scrabble.activePlayer.getPlayerScore());
 	}
 	
 	@Test
 	public void testCalculatePlacementPoints_CONTINUE () {
-		scrabble.calculatePlacementPoints("CATS", 8, 8, Direction.HORIZONTAL);
+		int moveValue = scrabble.calculatePlacementPoints("CATS", 8, 8, Direction.HORIZONTAL);
+		scrabble.activePlayer.increasePlayerScoreBy(moveValue);
 		assertEquals(6, scrabble.activePlayer.getPlayerScore());
 	}
 	
 	@Test
 	public void testCalculatePlacementPoints_MIDDLE_CROSS () {
-		scrabble.calculatePlacementPoints("CAT", 7, 7, Direction.VERTICAL);
+		int moveValue = scrabble.calculatePlacementPoints("CAT", 7, 7, Direction.VERTICAL);
+		scrabble.activePlayer.increasePlayerScoreBy(moveValue);
 		assertEquals(17, scrabble.activePlayer.getPlayerScore());
 	}
 
