@@ -5,6 +5,5 @@ public enum Choice {
 	PASSTURN,
 	GETHELP,
 	EXCHANGELETTERS,
-	QUIT,
-	CHALLENGE
+	QUIT
 }
