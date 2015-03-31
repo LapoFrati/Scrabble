@@ -33,7 +33,7 @@ public class Scrabble {
 	public Scrabble(){
 		pool = new Pool();
 		board = new Board();
-		ui = new UI();
+		ui = new UI(System.in);
 		keepPlaying = true;
 		dict = new Dictionary();
 	}
@@ -45,7 +45,7 @@ public class Scrabble {
 		turn = new Player[NUM_PLAYERS];
 		for(int i = 0; i<NUM_PLAYERS; i++){
 			turn[i] = new Player();
-			turn[i].setPlayerName(ui.getPlayerName());
+			turn[i].setPlayerName(ui.getPlayerName(i));
 			turn[i].getPlayerFrame().refillFrame(pool);
 		}
 		
@@ -57,7 +57,7 @@ public class Scrabble {
 			ui.promptActivePlayer(activePlayer,board);
 			proceed = false;
 			while(!proceed){
-				playerChoice = ui.getUserInput(System.in);
+				playerChoice = ui.getUserInput();
 				if(activePlayer.checkIfLostChallenge()){
 					activePlayer.resetLostChallenge();
 					proceed = true;
@@ -86,7 +86,7 @@ public class Scrabble {
 											activePlayer.increasePlayerScoreBy(moveValue);
 											
 
-											if(ui.checkChallenge(turn, currentPlayerNumber)){
+											if(ui.checkChallenge(turn, currentPlayerNumber) != -1){
 												//TODO: refund letters if challenge succeeded
 											}
 											else

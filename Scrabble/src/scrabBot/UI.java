@@ -6,6 +6,8 @@ package scrabBot;
 import java.io.InputStream;
 import java.util.Scanner;
 
+import com.sun.corba.se.spi.orbutil.fsm.Input;
+
 import action.Action;
 import action.ActionFactory;
 
@@ -13,10 +15,13 @@ public class UI {
 	
 	private Scanner sc;
 	private String nextAction;
+	private InputStream source;
 
-	public UI() {}
+	public UI(InputStream source) {
+		this.source = source;
+	}
 	
-	public Action getUserInput(InputStream source){
+	public Action getUserInput(){
 		sc = new Scanner(source);
 		nextAction = sc.nextLine();
 		while(!validateInput(nextAction)) {
@@ -32,24 +37,62 @@ public class UI {
 			System.out.print(msg);
 	}
 	
-	public String getPlayerName(){
-		return "TODO";
+	public String getPlayerName(int currentPlayer){
+		System.out.print("Player " + (currentPlayer+1) + " name: ");
+		sc = new Scanner(source);
+		String name = sc.nextLine();
+		while (name.length() > 20) {
+			System.out.println("Error: use a name shorter than 20 characters");
+			System.out.print("Player " + (currentPlayer+1) + " name: ");
+			name = sc.nextLine();
+		}
+		return name;
 	}
 	
 	public void gameInfo(Scrabble scrabble){
 		scrabble.board.displayBoard();
 		System.out.println("Pool's size: "+scrabble.pool.getPoolSize());
-		System.out.println(scrabble.P1.getPlayerName()+" : "+scrabble.P1.getPlayerScore());
-		System.out.println(scrabble.P2.getPlayerName()+" : "+scrabble.P2.getPlayerScore());
+		for (Player player : scrabble.turn)
+			System.out.println(player.getPlayerName()+" : "+player.getPlayerScore());
 		System.out.println();
 	}
 	
-	public boolean checkChallenge(Player[] players, int currentPlayer){
-		return false;
+	public int checkChallenge(Player[] players, int currentPlayer){
+		boolean decided = false;
+		int challengerNumber = -1;
+		System.out.println("Challenge? Y your_name / N");
+		sc = new Scanner(source);
+		while (!decided) {
+			String answer = sc.nextLine();
+			while (!answer.matches("Y *|N")) {
+				System.out.println("Error: incorrect answer format");
+				System.out.println("Challenge? Y your_name / N");
+				answer = sc.nextLine();
+			}
+			if (answer == "N")
+				decided = true;
+			else {
+				answer = answer.substring(2);
+				for (int i=0; i<players.length; i++)
+					if (answer == players[i].getPlayerName()) {
+						challengerNumber = i;
+						decided = true;
+					}
+			}
+		}
+		return challengerNumber;
 	}
 	
 	public int getNumberOfPlayers(){
-		return 2;
+		System.out.print("Number of players: ");
+		sc = new Scanner(source);
+		String numOfP = sc.nextLine();
+		while (!numOfP.matches("[2-4]")) {
+			System.out.println("Error: insert a number between 2 and 4");
+			System.out.print("Number of players: ");
+			numOfP = sc.next();
+		}
+		return Integer.parseInt(numOfP);
 	}
 	
 	public void promptActivePlayer(Player activePlayer,Board board){
