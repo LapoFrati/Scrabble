@@ -8,6 +8,7 @@ public class Player {
 	protected String playerName;
 	protected Frame frame;
 	protected static int numberOfPlayers = 0;
+	protected boolean lostChallenge = false;
 	
 	public Player()
 	{
@@ -15,6 +16,18 @@ public class Player {
 		Player.numberOfPlayers = numberOfPlayers + 1; // Default player name will be PlayerN where N is the number of player created so far
 		this.playerName = "Player".concat(Integer.toString(numberOfPlayers));
 		this.frame = new Frame();
+	}
+	
+	public void setLostChallenge(){
+		lostChallenge = true;
+	}
+	
+	public void resetLostChallenge(){
+		lostChallenge = false;
+	}
+	
+	public boolean checkIfLostChallenge(){
+		return lostChallenge;
 	}
 	
 	public Player(String name){
