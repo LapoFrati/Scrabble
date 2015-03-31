@@ -27,6 +27,8 @@ public class Scrabble {
 	private Board stagingBoard;
 	private int moveValue;
 	private Random rand;
+	private String lettersUsed;
+	private int challenger;
 	
 	private int NUM_PLAYERS;
 	
@@ -40,6 +42,11 @@ public class Scrabble {
 	
 
 	public void startGame(){
+		//TODO: avoid challenge as first command
+		if (!dict.loadDictionary()) {
+			ui.printMessage("Fatal error: cannot load dictionary", true);
+			return;
+		}
 		NUM_PLAYERS = ui.getNumberOfPlayers();
 		
 		turn = new Player[NUM_PLAYERS];
@@ -78,16 +85,22 @@ public class Scrabble {
 																					wordToPlace.getColumn(), 
 																					wordToPlace.getDirection());
 											
-											stagingBoard.placeWord(	wordToPlace.getWord(), 
-																	wordToPlace.getRow(), 
-																	wordToPlace.getColumn(), 
-																	wordToPlace.getDirection());
-											
+											lettersUsed = stagingBoard.placeWord(wordToPlace.getWord(), 
+																				wordToPlace.getRow(), 
+																				wordToPlace.getColumn(), 
+																				wordToPlace.getDirection());
+														
 											activePlayer.increasePlayerScoreBy(moveValue);
 											
 
-											if(ui.checkChallenge(turn, currentPlayerNumber) != -1){
-												//TODO: refund letters if challenge succeeded
+											if((challenger = ui.checkChallenge(turn, currentPlayerNumber)) != -1){
+												if (dict.dictionaryCheck(wordToPlace.getWord()))
+													turn[challenger].setLostChallenge();
+												else {
+													activePlayer.increasePlayerScoreBy(-moveValue);
+													activePlayer.getPlayerFrame().refundLetters(lettersUsed);
+													stagingBoard = board;
+												}
 											}
 											else
 												if(pool.getPoolSize() != 0){
@@ -103,6 +116,7 @@ public class Scrabble {
 													}
 												}
 											
+											board = stagingBoard;
 											proceed = true;
 										}
 										else
