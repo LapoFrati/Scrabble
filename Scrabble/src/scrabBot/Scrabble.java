@@ -57,12 +57,12 @@ public class Scrabble {
 			ui.promptActivePlayer(activePlayer,board);
 			proceed = false;
 			while(!proceed){
-				playerChoice = ui.getUserInput(System.in);
 				if(activePlayer.checkIfLostChallenge()){
 					activePlayer.resetLostChallenge();
 					proceed = true;
 				}
-				else
+				else{
+					playerChoice = ui.getUserInput(System.in);
 					switch(playerChoice.getChoice()){
 						case PLAYWORD:	PlayWord wordToPlace = (PlayWord) playerChoice;
 										CheckResult result = board.checkPlacement(wordToPlace.getWord(), 
@@ -123,6 +123,7 @@ public class Scrabble {
 										break;
 						default:	break;
 					}
+				}
 			}
 			passTurn();	
 	}
