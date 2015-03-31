@@ -125,18 +125,28 @@ public class Board {
 		return CheckResult.OK;
 	}
 	
-	public void placeWord(String word, int row, int column, Direction dir){
+	public String placeWord(String word, int row, int column, Direction dir){
 		if(firstPlacement)
 			firstPlacement = false;
 		
 		word = word.toUpperCase();
+		String letterUsed = "";
 		
 		for(int i = 0; i<word.length(); i++)
-			if(dir == Direction.VERTICAL)
-				board[row+i][column] = word.charAt(i);
-			else
-				board[row][column+i] = word.charAt(i);
-			
+			if(dir == Direction.VERTICAL) {
+				if (board[row+i][column] != FREE_LOCATION)
+					letterUsed += board[row+i][column];
+				else
+					board[row+i][column] = word.charAt(i);
+			}
+			else {
+				if (board[row][column+i] != FREE_LOCATION)
+					letterUsed += board[row][column+i];
+				else
+					board[row][column+i] = word.charAt(i);
+			}
+		
+		return letterUsed;
 	}
 	
 	public char getLetterAt( int row, int column ){

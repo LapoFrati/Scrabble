@@ -11,7 +11,7 @@ public class MockScrabble extends Scrabble {
 		board = new MockBoard();
 		pool = new MockPool();
 		activePlayer = P1;
-		ui = new UI();
+		ui = new UI(System.in);
 		keepPlaying = true;
 		dict = new Dictionary();
 	}
