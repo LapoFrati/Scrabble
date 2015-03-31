@@ -67,7 +67,7 @@ public class Board {
 					board[counterX][counterY] = FREE_LOCATION;
 			}
 	}
-
+	
 	public CheckResult checkPlacement(String word, int row, int column, Direction dir, Player player) {
 		boolean letterUsed = false, connectedToAnotherWord = false;
 		Frame frame = new Frame(player.getPlayerFrame());

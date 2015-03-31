@@ -39,11 +39,12 @@ public class UI {
 		System.out.print("Player " + (currentPlayer+1) + " name: ");
 		sc = new Scanner(source);
 		String name = sc.nextLine();
-		while (name.length() > 20) {
-			System.out.println("Error: use a name shorter than 20 characters");
+		while (!name.matches("[a-zA-Z]{1,19}")) {
+			
+			System.out.println("Error: use a name shorter than 20 letters a-z");
+			
 			System.out.print("Player " + (currentPlayer+1) + " name: ");
-			name = sc.nextLine();
-		}
+			name = sc.nextLine();		}
 		return name;
 	}
 	
@@ -55,36 +56,32 @@ public class UI {
 		System.out.println();
 	}
 	
-	public int checkChallenge(Player[] players, int currentPlayer){
+	public int checkChallenge(Player[] players){
 		boolean decided = false;
 		int challengerNumber = -1;
 		sc = new Scanner(source);
 		while (!decided) {
 			System.out.println("Challenge? Y your_name / N");
 			String answer = sc.nextLine();
-			while (!answer.matches("Y *|N")) {
+			while (!answer.matches("Y [a-zA-Z]{1,19}|N")) {
 				System.out.println("Error: incorrect answer format");
 				System.out.println("Challenge? Y your_name / N");
 				answer = sc.nextLine();
 			}
-			if (answer == "N") {
+			if (answer.matches("N")) {
 				challengerNumber = -1;
 				decided = true;
 			}
 			else {
 				answer = answer.substring(2);
-				int i = 0;
-				for (; i < players.length; i++)
-					if (answer == players[i].getPlayerName()) {
+				int i;
+				for (i = 0; i < players.length; i++)
+					if (answer.matches(players[i].getPlayerName())) {
 						challengerNumber = i;
 						decided = true;
 					}
 				if (!decided)
-					System.out.println("Error: no player named " + answer + " found");
-				if (i == currentPlayer) {
-					System.out.println("Error: you can not challenge yourself");
-					decided = false;
-				}		
+					System.out.println("Error: no player named " + answer + " found");	
 			}
 		}
 		return challengerNumber;

@@ -38,6 +38,7 @@ public class Scrabble {
 		ui = new UI(System.in);
 		keepPlaying = true;
 		dict = new Dictionary();
+		rand = new Random();
 	}
 	
 
@@ -56,7 +57,7 @@ public class Scrabble {
 			turn[i].getPlayerFrame().refillFrame(pool);
 		}
 		
-		currentPlayerNumber = rand.nextInt(NUM_PLAYERS+1);
+		currentPlayerNumber = rand.nextInt(NUM_PLAYERS);
 		activePlayer = turn[currentPlayerNumber];
 		
 		while(keepPlaying){
@@ -92,8 +93,7 @@ public class Scrabble {
 														
 											activePlayer.increasePlayerScoreBy(moveValue);
 											
-
-											if((challenger = ui.checkChallenge(turn, currentPlayerNumber)) != -1){
+											if((challenger = ui.checkChallenge(turn)) != -1){
 												if (dict.dictionaryCheck(wordToPlace.getWord()))
 													turn[challenger].setLostChallenge();
 												else {
