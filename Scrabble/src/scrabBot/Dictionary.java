@@ -34,6 +34,8 @@ public class Dictionary {
 	}
 	
 	public boolean dictionaryCheck(String word){
-		return true;
+		boolean wordInDictionary;
+		wordInDictionary = scrabbleDictionary.contains(word); 
+		return wordInDictionary;
 	}
 }
