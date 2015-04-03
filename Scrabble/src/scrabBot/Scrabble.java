@@ -35,6 +35,7 @@ public class Scrabble {
 	public Scrabble(){
 		pool = new Pool();
 		board = new Board();
+		stagingBoard = new Board();
 		ui = new UI(System.in);
 		keepPlaying = true;
 		dict = new Dictionary();
@@ -44,7 +45,6 @@ public class Scrabble {
 	
 
 	public void startGame(){
-		//TODO: avoid challenge as first command
 		if (!dict.loadDictionary()) {
 			ui.printMessage("Fatal error: cannot load dictionary", true);
 			return;
@@ -60,17 +60,19 @@ public class Scrabble {
 		
 		currentPlayerNumber = rand.nextInt(NUM_PLAYERS);
 		activePlayer = turn[currentPlayerNumber];
+		ui.printMessage(activePlayer.getPlayerName()+"starts.", true);
 		
 		while(keepPlaying){
-			ui.gameInfo(this);
-			ui.promptActivePlayer(activePlayer,board);
 			proceed = false;
 			while(!proceed){
 				if(activePlayer.checkIfLostChallenge()){
+					ui.printMessage("Skipped "+activePlayer.getPlayerName() +"'s turn.", true);
 					activePlayer.resetLostChallenge();
 					proceed = true;
 				}
 				else{
+					ui.gameInfo(this);
+					ui.promptActivePlayer(activePlayer,board);
 					playerChoice = ui.getUserInput();
 					switch(playerChoice.getChoice()){
 						case PLAYWORD:	PlayWord wordToPlace = (PlayWord) playerChoice;
@@ -94,9 +96,10 @@ public class Scrabble {
 											
 											activePlayer.increasePlayerScoreBy(moveValue);
 											
+											// CHALLENGE **********************
 											if((challenger = ui.checkChallenge(turn)) != -1){
 												if (dict.dictionaryCheck(wordToPlace.getWord())){ //the word is legal
-													ui.printMessage(wordToPlace.getWord()+" is legal. "+turn[challenger]+" loses his turn." , true);
+													ui.printMessage(wordToPlace.getWord()+" is legal. "+turn[challenger].getPlayerName()+" loses his turn." , true);
 													turn[challenger].setLostChallenge();
 													board = stagingBoard; //the play is finalized
 												}else { //the word is illegal
@@ -106,25 +109,28 @@ public class Scrabble {
 												}
 											}
 											else{
-												board = stagingBoard; // no one challenged, the play is finalized
-												if(pool.getPoolSize() != 0){
-														try{
-															activePlayer.getPlayerFrame().refillFrame(pool);
-														} catch (EmptyPoolException e){
-															ui.printMessage("Letters in the pool finished.", true);
-														}
-												} else {
+													board = stagingBoard; // no one challenged, the play is finalized
+												}
+											// END CHALLENGE ******************
+											
+											if(pool.getPoolSize() != 0){
+													try{
+														activePlayer.getPlayerFrame().refillFrame(pool);
+													} catch (EmptyPoolException e){
+														ui.printMessage("Letters in the pool finished.", true);
+													}
+											} else {
 													if(activePlayer.getPlayerFrame().getFrameSize() == 0){
 														keepPlaying = false;
 														endGame();
 													}
 												}
-											}
-											board = stagingBoard;
+											
 											proceed = true;
 										}
-										else
+										else //second branch of if((result == CheckResult.OK))
 											ui.printMessage("Invalid Placement. Error: "+result.name(), true);
+										
 										numOfPass = 0;
 										break;
 						case PASSTURN: 	proceed = true;
@@ -154,13 +160,7 @@ public class Scrabble {
 }
 	
 	private void endGame(){
-		//TODO: make it work for more than 2 players
 		ArrayList<Character> unusedLetters;
-		Player otherPlayer;
-		if(activePlayer.equals(P1))
-			otherPlayer = P2;
-		else
-			otherPlayer = P1;
 		for( int i = 0; i < NUM_PLAYERS; i++){
 			if(i != currentPlayerNumber){
 				unusedLetters = turn[i].getPlayerFrame().getLetters();
@@ -199,10 +199,6 @@ public class Scrabble {
 	private void passTurn(){
 		currentPlayerNumber = (currentPlayerNumber + 1)%NUM_PLAYERS;
 		activePlayer = turn[currentPlayerNumber];
-	}
-	
-	private Player previousPlayer(){
-		return turn[(currentPlayerNumber-1)%NUM_PLAYERS];
 	}
 	
 	public int calculatePlacementPoints(String wordPlayed, int row, int column, Direction dir){

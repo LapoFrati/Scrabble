@@ -58,6 +58,21 @@ public class Board {
 		resetBoard();
 	}
 	
+	public Board( Board backup ){
+		firstPlacement = true;
+		board = backup.getBoard();
+	}
+	
+	public char[][] getBoard(){
+		char[][] backup = new char[MAX_ROW + PADDING][MAX_COLUMN + PADDING];
+		for(int counterX = 1; counterX <= MAX_ROW; counterX++)
+			for(int counterY = 1; counterY <= MAX_COLUMN; counterY++)
+			{
+					backup[counterX][counterY] = board[counterX][counterY] ;
+			}
+		return backup;
+	}
+	
 	public void resetBoard(){
 		firstPlacement = true;
 		board = new char[MAX_ROW + PADDING][MAX_COLUMN + PADDING];
