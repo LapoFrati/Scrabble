@@ -35,7 +35,7 @@ public class Dictionary {
 	
 	public boolean dictionaryCheck(String word){
 		boolean wordInDictionary;
-		wordInDictionary = scrabbleDictionary.contains(word); 
+		wordInDictionary = scrabbleDictionary.contains(word.toLowerCase()); 
 		return wordInDictionary;
 	}
 }
