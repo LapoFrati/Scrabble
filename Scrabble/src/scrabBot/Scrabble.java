@@ -147,9 +147,9 @@ public class Scrabble {
 													ui.printMessage("Not enough letters remaining", true);
 												numOfPass = 0;
 												break;
-						case QUIT: 		quitGame();;
+						case QUIT: 		ui.printMessage("GAME OVER", true);
 										proceed = true;
-										ui.printMessage(activePlayer.getPlayerName() + " surrendered.", true);
+										quitGame();
 										break;
 						default:	break;
 					}
