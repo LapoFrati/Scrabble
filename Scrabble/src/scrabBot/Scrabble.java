@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import action.Action;
-import action.Choice;
 import action.ExchangeLetters;
 import action.PlayWord;
 
@@ -80,8 +79,8 @@ public class Scrabble {
 												wordToPlace.getColumn(), 
 												wordToPlace.getDirection(),
 												activePlayer);
-										if((result == CheckResult.OK) && dict.dictionaryCheck(wordToPlace.getWord())){
-											stagingBoard = board;
+										if((result == CheckResult.OK)){
+											stagingBoard = new Board(board);
 											
 											moveValue = calculatePlacementPoints(	wordToPlace.getWord(), 
 																					wordToPlace.getRow(),
@@ -92,19 +91,22 @@ public class Scrabble {
 																				wordToPlace.getRow(), 
 																				wordToPlace.getColumn(), 
 																				wordToPlace.getDirection());
-														
+											
 											activePlayer.increasePlayerScoreBy(moveValue);
 											
 											if((challenger = ui.checkChallenge(turn)) != -1){
-												if (dict.dictionaryCheck(wordToPlace.getWord()))
+												if (dict.dictionaryCheck(wordToPlace.getWord())){ //the word is legal
+													ui.printMessage(wordToPlace.getWord()+" is legal. "+turn[challenger]+" loses his turn." , true);
 													turn[challenger].setLostChallenge();
-												else {
+													board = stagingBoard; //the play is finalized
+												}else { //the word is illegal
+													ui.printMessage(wordToPlace.getWord()+" is illegal.", true);
 													activePlayer.increasePlayerScoreBy(-moveValue);
 													activePlayer.getPlayerFrame().refundLetters(lettersUsed);
-													stagingBoard = board;
 												}
 											}
-											else
+											else{
+												board = stagingBoard; // no one challenged, the play is finalized
 												if(pool.getPoolSize() != 0){
 														try{
 															activePlayer.getPlayerFrame().refillFrame(pool);
@@ -117,7 +119,7 @@ public class Scrabble {
 														endGame();
 													}
 												}
-											
+											}
 											board = stagingBoard;
 											proceed = true;
 										}
@@ -126,8 +128,10 @@ public class Scrabble {
 										numOfPass = 0;
 										break;
 						case PASSTURN: 	proceed = true;
-										if (++numOfPass >= 3)
+										if (++numOfPass >= 3){
+											keepPlaying = false;
 											endGame();
+										}
 										break;
 						case GETHELP:	displayHelp();
 										break;
@@ -157,24 +161,39 @@ public class Scrabble {
 			otherPlayer = P2;
 		else
 			otherPlayer = P1;
-		
-		unusedLetters = otherPlayer.getPlayerFrame().getLetters();
-		
-		for(Character letter : unusedLetters){
-			activePlayer.increasePlayerScoreBy(pool.checkValue(letter));
-			otherPlayer.increasePlayerScoreBy(-pool.checkValue(letter));
+		for( int i = 0; i < NUM_PLAYERS; i++){
+			if(i != currentPlayerNumber){
+				unusedLetters = turn[i].getPlayerFrame().getLetters();
+				for(Character letter : unusedLetters){
+					activePlayer.increasePlayerScoreBy(pool.checkValue(letter));
+					turn[i].increasePlayerScoreBy(-pool.checkValue(letter));
+				}
+			}
 		}
 		
 		ui.gameInfo(this);
 		
-		if(activePlayer.getPlayerScore() > otherPlayer.getPlayerScore())
-			ui.printMessage("The winner is "+activePlayer.getPlayerName(),true);
-		else
-			if(activePlayer.getPlayerScore() < otherPlayer.getPlayerScore())
-				ui.printMessage("The winner is "+otherPlayer.getPlayerName(),true);
+		int maxScore = turn[0].getPlayerScore();
+		int winner = 0;
+		int ties = 0;
+		int tmp;
+		for(int i = 1; i<NUM_PLAYERS; i++){
+			tmp = turn[i].getPlayerScore();
+			if(tmp > maxScore){
+				maxScore=tmp;
+				winner = i;
+				ties = 0;
+			}
 			else
-				ui.printMessage("TIE", true);
+				if(tmp == maxScore){
+					ties += 1;
+				}
+		}
 		
+		if(ties == NUM_PLAYERS -1)
+			ui.printMessage("TIE", true);
+		else
+			ui.printMessage("The winner is "+turn[winner].getPlayerName(), true);
 	}
 	
 	private void passTurn(){
