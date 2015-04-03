@@ -29,6 +29,7 @@ public class Scrabble {
 	private Random rand;
 	private String lettersUsed;
 	private int challenger;
+	private int numOfPass;
 	
 	private int NUM_PLAYERS;
 	
@@ -39,6 +40,7 @@ public class Scrabble {
 		keepPlaying = true;
 		dict = new Dictionary();
 		rand = new Random();
+		numOfPass = 0;
 	}
 	
 
@@ -121,15 +123,19 @@ public class Scrabble {
 										}
 										else
 											ui.printMessage("Invalid Placement. Error: "+result.name(), true);
+										numOfPass = 0;
 										break;
 						case PASSTURN: 	proceed = true;
+										if (++numOfPass >= 3)
+											endGame();
 										break;
 						case GETHELP:	displayHelp();
 										break;
 						case EXCHANGELETTERS:	if(pool.getPoolSize() >= 7)
 													proceed = exchangeLetters(((ExchangeLetters)playerChoice).getLettersToChange());
 												else
-													ui.printMessage("Not enough letters remaining", true);			
+													ui.printMessage("Not enough letters remaining", true);
+												numOfPass = 0;
 												break;
 						case QUIT: 		quitGame();;
 										proceed = true;
@@ -144,6 +150,7 @@ public class Scrabble {
 }
 	
 	private void endGame(){
+		//TODO: make it work for more than 2 players
 		ArrayList<Character> unusedLetters;
 		Player otherPlayer;
 		if(activePlayer.equals(P1))
