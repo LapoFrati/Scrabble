@@ -107,16 +107,16 @@ public class Scrabble {
 												//if(dict.dictionaryCheck(wordToPlace.getWord())){
 													ui.printMessage(wordToPlace.getWord()+" is legal. "+turn[challenger].getPlayerName()+" loses his turn." , true);
 													turn[challenger].setLostChallenge();
-													activePlayer.getPlayerFrame().removeLetters(lettersUsed);
 													board = stagingBoard; //the play is finalized
+													activePlayer.getPlayerFrame().removeLetters(lettersUsed);
 												}else { //the word is illegal
 													ui.printMessage(wordToPlace.getWord()+" is illegal.", true);
 													activePlayer.increasePlayerScoreBy(-moveValue);
-													//activePlayer.getPlayerFrame().refundLetters(lettersUsed);
 												}
 											}
 											else{
 													board = stagingBoard; // no one challenged, the play is finalized
+													activePlayer.getPlayerFrame().removeLetters(lettersUsed);
 												}
 											// END CHALLENGE ******************
 											
