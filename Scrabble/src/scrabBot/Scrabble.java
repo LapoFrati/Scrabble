@@ -6,6 +6,8 @@ package scrabBot;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.omg.CORBA.FREE_MEM;
+
 import action.Action;
 import action.ExchangeLetters;
 import action.PlayWord;
@@ -92,19 +94,25 @@ public class Scrabble {
 																				wordToPlace.getRow(), 
 																				wordToPlace.getColumn(), 
 																				wordToPlace.getDirection());
-											
+											System.out.println("-"+lettersUsed+"-");
 											activePlayer.increasePlayerScoreBy(moveValue);
 											
 											// CHALLENGE **********************
 											if((challenger = ui.checkChallenge(turn)) != -1){
-												if (dict.dictionaryCheck(wordToPlace.getWord())){ //the word is legal
+												if (checkLegality(	wordToPlace.getWord(), 
+																	wordToPlace.getRow(), 
+																	wordToPlace.getColumn(), 
+																	wordToPlace.getDirection())
+													){ //the word is legal 
+												//if(dict.dictionaryCheck(wordToPlace.getWord())){
 													ui.printMessage(wordToPlace.getWord()+" is legal. "+turn[challenger].getPlayerName()+" loses his turn." , true);
 													turn[challenger].setLostChallenge();
+													activePlayer.getPlayerFrame().removeLetters(lettersUsed);
 													board = stagingBoard; //the play is finalized
 												}else { //the word is illegal
 													ui.printMessage(wordToPlace.getWord()+" is illegal.", true);
 													activePlayer.increasePlayerScoreBy(-moveValue);
-													activePlayer.getPlayerFrame().refundLetters(lettersUsed);
+													//activePlayer.getPlayerFrame().refundLetters(lettersUsed);
 												}
 											}
 											else{
@@ -198,6 +206,60 @@ public class Scrabble {
 	private void passTurn(){
 		currentPlayerNumber = (currentPlayerNumber + 1)%NUM_PLAYERS;
 		activePlayer = turn[currentPlayerNumber];
+	}
+	
+	public boolean checkLegality(String word, int row, int column, Direction dir){
+		int limit;
+		if(dict.dictionaryCheck(word)== false)
+			return false;
+		switch(dir){
+		
+		case VERTICAL: 	limit = row + word.length();
+						for(int i = row; i<limit; i++ )
+							if(	(column > 0 && board.getLetterAt(row, column-1) != Board.FREE_LOCATION)
+								|| (column < Board.MAX_COLUMN-1 && board.getLetterAt(row, column+1) != Board.FREE_LOCATION)	)
+								if(checkHorizontal(i, column) == false)
+									return false;
+						
+						break;
+						
+		case HORIZONTAL: 	limit = column + word.length();
+							for(int i = column; i<limit; i++ )
+								if(	(row > 0 && board.getLetterAt(row -1, column) != Board.FREE_LOCATION)
+									|| (row < Board.MAX_ROW-1 && board.getLetterAt(row+1, column) != Board.FREE_LOCATION)	)
+								if(checkVertical(row, i) == false)
+									return false;
+							break;
+		}
+		return true;
+	}
+	
+	public boolean checkHorizontal(int row, int column){
+		int head = column;
+		int tail = column;
+		String word = "";
+		while(head > 0 && board.getLetterAt(row, head) != Board.FREE_LOCATION) //Find start of word
+			head--;
+		while(tail < Board.MAX_COLUMN && board.getLetterAt(row, tail) != Board.FREE_LOCATION) //Find end of word
+			tail++;
+		for(head++; head<=tail; head++) //Build word
+			word += board.getLetterAt(row, head);
+		
+		return dict.dictionaryCheck(word); //Check word legality
+	}
+	
+	public boolean checkVertical(int row, int column){
+		int head = row;
+		int tail = row;
+		String word = "";
+		while(head > 0 && board.getLetterAt(head, column) != Board.FREE_LOCATION) //Find start of word
+			head--;
+		while(tail < Board.MAX_ROW && board.getLetterAt(tail, column) != Board.FREE_LOCATION) //Find end of word
+			tail++;
+		for( ; head<=tail; head++)
+			word += board.getLetterAt(head, column); //Build word
+		
+		return dict.dictionaryCheck(word); //Check word legality
 	}
 	
 	public int calculatePlacementPoints(String wordPlayed, int row, int column, Direction dir){
