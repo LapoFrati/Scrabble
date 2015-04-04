@@ -328,7 +328,7 @@ public class Scrabble {
 		
 		if (dir == Direction.HORIZONTAL) {
 			int tempColumn;
-			while (newColumn > 0 && board.getLetterAt(row, newColumn-1) != Board.FREE_LOCATION)
+			while (newColumn > 1 && board.getLetterAt(row, newColumn-1) != Board.FREE_LOCATION)
 				newColumn--;
 			diff = column - newColumn;
 			tempColumn = newColumn;
@@ -348,7 +348,7 @@ public class Scrabble {
 		}
 		else {
 			int tempRow;
-			while (newRow > 0 && board.getLetterAt(newRow-1, column) != Board.FREE_LOCATION)
+			while (newRow > 1 && board.getLetterAt(newRow-1, column) != Board.FREE_LOCATION)
 				newRow--;
 			diff = row - newRow;
 			tempRow = newRow;
