@@ -43,14 +43,6 @@ public class Frame {
 		return true;
 	}
 	
-	public boolean refundLetters (String letters) {
-		if (letters.length() + frame.size() > 7)
-			return false;
-		for (Character c : letters.toCharArray())
-			frame.add(c);
-		return true;
-	}
-	
 	public int getFrameSize(){
 		return frame.size();
 	}
