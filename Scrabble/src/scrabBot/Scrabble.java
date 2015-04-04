@@ -12,8 +12,6 @@ import action.PlayWord;
 
 public class Scrabble {
 	
-	protected Player P1;
-	protected Player P2;
 	protected Board board;
 	protected Pool pool;
 	protected Player activePlayer;
@@ -209,10 +207,10 @@ public class Scrabble {
 				lettersUsed++;
 				wordMult *= Board.wordMultiplier[row][column];
 				total += Board.letterMultiplier[row][column] * pool.checkValue(wordPlayed.charAt(i));
-				if (dir == Direction.VERTICAL && (board.getLetterAt(row, column-1) != Board.FREE_LOCATION || board.getLetterAt(row, column+1) != Board.FREE_LOCATION)) {
+				if (dir == Direction.VERTICAL && ((column > 1 && board.getLetterAt(row, column-1) != Board.FREE_LOCATION) || (column < 15 && board.getLetterAt(row, column+1) != Board.FREE_LOCATION))) {
 					otherWordsTotal += calculateOtherWordsPoints(wordPlayed.charAt(i), row, column, Direction.HORIZONTAL);
 				}
-				else if (dir == Direction.HORIZONTAL && (board.getLetterAt(row-1, column) != Board.FREE_LOCATION || board.getLetterAt(row+1, column) != Board.FREE_LOCATION)) {
+				else if (dir == Direction.HORIZONTAL && ((row > 1 && board.getLetterAt(row-1, column) != Board.FREE_LOCATION) || (row < 15 && board.getLetterAt(row+1, column) != Board.FREE_LOCATION))) {
 					otherWordsTotal += calculateOtherWordsPoints(wordPlayed.charAt(i), row, column, Direction.VERTICAL);
 				}
 			}
