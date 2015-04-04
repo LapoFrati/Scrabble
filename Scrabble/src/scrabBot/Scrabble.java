@@ -94,7 +94,7 @@ public class Scrabble {
 																				wordToPlace.getRow(), 
 																				wordToPlace.getColumn(), 
 																				wordToPlace.getDirection());
-											System.out.println("-"+lettersUsed+"-");
+											
 											activePlayer.increasePlayerScoreBy(moveValue);
 											
 											// CHALLENGE **********************
@@ -218,6 +218,7 @@ public class Scrabble {
 						for(int i = row; i<limit; i++ )
 							if(	(column > 0 && board.getLetterAt(row, column-1) != Board.FREE_LOCATION)
 								|| (column < Board.MAX_COLUMN-1 && board.getLetterAt(row, column+1) != Board.FREE_LOCATION)	)
+								//there are letters on either side of the word
 								if(checkHorizontal(i, column) == false)
 									return false;
 						
@@ -227,7 +228,8 @@ public class Scrabble {
 							for(int i = column; i<limit; i++ )
 								if(	(row > 0 && board.getLetterAt(row -1, column) != Board.FREE_LOCATION)
 									|| (row < Board.MAX_ROW-1 && board.getLetterAt(row+1, column) != Board.FREE_LOCATION)	)
-								if(checkVertical(row, i) == false)
+									//there are letters on either side of the word
+									if(checkVertical(row, i) == false)
 									return false;
 							break;
 		}
