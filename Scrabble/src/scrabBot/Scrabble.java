@@ -216,8 +216,8 @@ public class Scrabble {
 		
 		case VERTICAL: 	limit = row + word.length();
 						for(int i = row; i<limit; i++ )
-							if(	(column > 0 && board.getLetterAt(row, column-1) != Board.FREE_LOCATION)
-								|| (column < Board.MAX_COLUMN-1 && board.getLetterAt(row, column+1) != Board.FREE_LOCATION)	)
+							if(	(column > 1 && board.getLetterAt(row, column-1) != Board.FREE_LOCATION)
+								|| (column < Board.MAX_COLUMN && board.getLetterAt(row, column+1) != Board.FREE_LOCATION)	)
 								//there are letters on either side of the word
 								if(checkHorizontal(i, column) == false)
 									return false;
@@ -226,8 +226,8 @@ public class Scrabble {
 						
 		case HORIZONTAL: 	limit = column + word.length();
 							for(int i = column; i<limit; i++ )
-								if(	(row > 0 && board.getLetterAt(row -1, column) != Board.FREE_LOCATION)
-									|| (row < Board.MAX_ROW-1 && board.getLetterAt(row+1, column) != Board.FREE_LOCATION)	)
+								if(	(row > 1 && board.getLetterAt(row -1, column) != Board.FREE_LOCATION)
+									|| (row < Board.MAX_ROW && board.getLetterAt(row+1, column) != Board.FREE_LOCATION)	)
 									//there are letters on either side of the word
 									if(checkVertical(row, i) == false)
 									return false;
@@ -240,9 +240,9 @@ public class Scrabble {
 		int head = column;
 		int tail = column;
 		String word = "";
-		while(head > 0 && board.getLetterAt(row, head) != Board.FREE_LOCATION) //Find start of word
+		while(head > 1 && board.getLetterAt(row, head-1) != Board.FREE_LOCATION) //Find start of word
 			head--;
-		while(tail < Board.MAX_COLUMN && board.getLetterAt(row, tail) != Board.FREE_LOCATION) //Find end of word
+		while(tail < Board.MAX_COLUMN && board.getLetterAt(row, tail+1) != Board.FREE_LOCATION) //Find end of word
 			tail++;
 		for(head++; head<=tail; head++) //Build word
 			word += board.getLetterAt(row, head);
@@ -254,9 +254,9 @@ public class Scrabble {
 		int head = row;
 		int tail = row;
 		String word = "";
-		while(head > 0 && board.getLetterAt(head, column) != Board.FREE_LOCATION) //Find start of word
+		while(head > 1 && board.getLetterAt(head-1, column) != Board.FREE_LOCATION) //Find start of word
 			head--;
-		while(tail < Board.MAX_ROW && board.getLetterAt(tail, column) != Board.FREE_LOCATION) //Find end of word
+		while(tail < Board.MAX_ROW && board.getLetterAt(tail, column+1) != Board.FREE_LOCATION) //Find end of word
 			tail++;
 		for( ; head<=tail; head++)
 			word += board.getLetterAt(head, column); //Build word
