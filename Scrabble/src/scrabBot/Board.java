@@ -149,16 +149,16 @@ public class Board {
 		
 		for(int i = 0; i<word.length(); i++)
 			if(dir == Direction.VERTICAL) {
-				if (board[row+i][column] != FREE_LOCATION)
-					letterUsed += board[row+i][column];
-				else
+				if (board[row+i][column] == FREE_LOCATION){
 					board[row+i][column] = word.charAt(i);
+					letterUsed += board[row+i][column];
+				}
 			}
 			else {
-				if (board[row][column+i] != FREE_LOCATION)
-					letterUsed += board[row][column+i];
-				else
+				if (board[row][column+i] == FREE_LOCATION){
 					board[row][column+i] = word.charAt(i);
+					letterUsed += board[row][column+i];
+				}
 			}
 		
 		return letterUsed;
