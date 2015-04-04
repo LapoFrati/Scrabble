@@ -21,12 +21,13 @@ public class Scrabble {
 	protected Action playerChoice;
 	protected Dictionary dict;
 	protected Player[] turn;
-	private Board stagingBoard;
+	protected Board stagingBoard;
+	protected int numOfPass;
+	protected Random rand;
 	private int moveValue;
-	private Random rand;
 	private String lettersUsed;
 	private int challenger;
-	private int numOfPass;
+
 	
 	private int NUM_PLAYERS;
 	

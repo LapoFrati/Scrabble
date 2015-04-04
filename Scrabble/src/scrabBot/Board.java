@@ -211,8 +211,8 @@ public class Board {
 	
 	private boolean outOfBounds (Direction dir, int row, int column, int len) {
 		if	(  row < 1 || column < 1 // check the left and top bounds
-				|| (dir == Direction.VERTICAL && row + len > MAX_ROW) // check the right bound
-				|| (dir == Direction.HORIZONTAL && column + len > MAX_COLUMN)) // check the bottom bound
+				|| (dir == Direction.VERTICAL && row + len > MAX_ROW+1) // check the right bound
+				|| (dir == Direction.HORIZONTAL && column + len > MAX_COLUMN+1)) // check the bottom bound
 			return true;
 		else
 			return false;
