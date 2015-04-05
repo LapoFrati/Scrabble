@@ -106,6 +106,6 @@ public class UI {
 	}
 	
 	public boolean validateInput(String userInput) {
-		return userInput.matches("QUIT|PASS|HELP|EXCHANGE [A-Z&]{1,7}|[A-O]([1-9]|1[0-5]) [AD] [A-Z&]{1,15}");
+		return userInput.matches("QUIT|PASS|HELP|EXCHANGE [A-Z&]{1,7}|[A-O]([1-9]|1[0-5]) [AD] [a-zA-Z&]{1,15}");
 	}
 }

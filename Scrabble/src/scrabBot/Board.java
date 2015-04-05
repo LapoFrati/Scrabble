@@ -97,6 +97,8 @@ public class Board {
 		for( Character letter : word.toCharArray() ){
 			if (board[row+i][column+j] == FREE_LOCATION ){
 				letterUsed = true;
+				if(Character.isLowerCase(letter))
+					letter = '&';
 				if(!frame.removeLetter(letter)) // removeLetter returns false if the letter is not present in the frame
 					return CheckResult.LACK_NECESSARY_LETTERS;
 			}
@@ -144,20 +146,25 @@ public class Board {
 		if(firstPlacement)
 			firstPlacement = false;
 		
-		word = word.toUpperCase();
 		String letterUsed = "";
 		
 		for(int i = 0; i<word.length(); i++)
 			if(dir == Direction.VERTICAL) {
 				if (board[row+i][column] == FREE_LOCATION){
 					board[row+i][column] = word.charAt(i);
-					letterUsed += board[row+i][column];
+					if(Character.isLowerCase(board[row+i][column]))
+						letterUsed += '&';
+					else
+						letterUsed += board[row+i][column];
 				}
 			}
 			else {
 				if (board[row][column+i] == FREE_LOCATION){
 					board[row][column+i] = word.charAt(i);
-					letterUsed += board[row][column+i];
+					if(Character.isLowerCase(board[row][column+1]))
+						letterUsed += '&';
+					else
+						letterUsed += board[row][column+i];
 				}
 			}
 		

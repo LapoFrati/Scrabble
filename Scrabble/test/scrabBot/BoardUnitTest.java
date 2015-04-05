@@ -126,7 +126,7 @@ public class BoardUnitTest {
 
 	@Test
 	public void testPlaceWord() {
-		regularBoard.placeWord("yo", Board.CENTER_ROW, Board.CENTER_COLUMN, Direction.HORIZONTAL);
+		regularBoard.placeWord("YO", Board.CENTER_ROW, Board.CENTER_COLUMN, Direction.HORIZONTAL);
 		assertEquals(regularBoard.getLetterAt(Board.CENTER_ROW, Board.CENTER_COLUMN), 'Y');
 		assertEquals(regularBoard.getLetterAt(Board.CENTER_ROW, Board.CENTER_COLUMN + 1), 'O');
 	}

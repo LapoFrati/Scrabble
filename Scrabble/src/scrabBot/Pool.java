@@ -67,6 +67,7 @@ public class Pool implements Cloneable{
 	
 	/* If the letter is valid returns its value, otherwise throws an exception */
 	public int checkValue(Character letter) throws WrongLetterException {
+		letter = Character.toUpperCase(letter);
 		if(letterValues.containsKey(letter))
 			return letterValues.get(letter);
 		else

@@ -5,9 +5,6 @@ package scrabBot;
 
 import java.util.ArrayList;
 import java.util.Random;
-
-import org.omg.CORBA.FREE_MEM;
-
 import action.Action;
 import action.ExchangeLetters;
 import action.PlayWord;
