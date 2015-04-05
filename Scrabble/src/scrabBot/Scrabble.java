@@ -102,12 +102,12 @@ public class Scrabble {
 																	wordToPlace.getDirection())
 													){ //the word is legal 
 												//if(dict.dictionaryCheck(wordToPlace.getWord())){
-													ui.printMessage(wordToPlace.getWord()+" is legal. "+turn[challenger].getPlayerName()+" loses his turn." , true);
+													ui.printMessage("The move is legal. "+turn[challenger].getPlayerName()+" loses his turn." , true);
 													turn[challenger].setLostChallenge();
 													board = stagingBoard; //the play is finalized
 													activePlayer.getPlayerFrame().removeLetters(lettersUsed);
 												}else { //the word is illegal
-													ui.printMessage(wordToPlace.getWord()+" is illegal.", true);
+													ui.printMessage("The move is illegal.", true);
 													activePlayer.increasePlayerScoreBy(-moveValue);
 												}
 											}
@@ -207,14 +207,21 @@ public class Scrabble {
 	
 	public boolean checkLegality(String word, int row, int column, Direction dir){
 		int limit;
-		if(dict.dictionaryCheck(word)== false)
+		boolean result;
+		ui.printMessage("Checking "+word, false);
+		result = dict.dictionaryCheck(word); //Check word legality
+		if(result == false)
+			ui.printMessage(" -> Illegal.", true);
+		else
+			ui.printMessage(" -> Legal", true);
+		if(result == false)
 			return false;
 		switch(dir){
 		
 		case VERTICAL: 	limit = row + word.length();
 						for(int i = row; i<limit; i++ )
-							if(	(column > 1 && board.getLetterAt(row, column-1) != Board.FREE_LOCATION)
-								|| (column < Board.MAX_COLUMN && board.getLetterAt(row, column+1) != Board.FREE_LOCATION)	)
+							if(	(column > 1 && stagingBoard.getLetterAt(row, column-1) != Board.FREE_LOCATION)
+								|| (column < Board.MAX_COLUMN && stagingBoard.getLetterAt(row, column+1) != Board.FREE_LOCATION)	)
 								//there are letters on either side of the word
 								if(checkHorizontal(i, column) == false)
 									return false;
@@ -223,8 +230,8 @@ public class Scrabble {
 						
 		case HORIZONTAL: 	limit = column + word.length();
 							for(int i = column; i<limit; i++ )
-								if(	(row > 1 && board.getLetterAt(row -1, column) != Board.FREE_LOCATION)
-									|| (row < Board.MAX_ROW && board.getLetterAt(row+1, column) != Board.FREE_LOCATION)	)
+								if(	(row > 1 && stagingBoard.getLetterAt(row -1, column) != Board.FREE_LOCATION)
+									|| (row < Board.MAX_ROW && stagingBoard.getLetterAt(row+1, column) != Board.FREE_LOCATION)	)
 									//there are letters on either side of the word
 									if(checkVertical(row, i) == false)
 									return false;
@@ -236,29 +243,41 @@ public class Scrabble {
 	public boolean checkHorizontal(int row, int column){
 		int head = column;
 		int tail = column;
+		boolean result = false;
 		String word = "";
-		while(head > 1 && board.getLetterAt(row, head-1) != Board.FREE_LOCATION) //Find start of word
+		while(head > 1 && stagingBoard.getLetterAt(row, head-1) != Board.FREE_LOCATION) //Find start of word
 			head--;
-		while(tail < Board.MAX_COLUMN && board.getLetterAt(row, tail+1) != Board.FREE_LOCATION) //Find end of word
+		while(tail < Board.MAX_COLUMN && stagingBoard.getLetterAt(row, tail+1) != Board.FREE_LOCATION) //Find end of word
 			tail++;
-		for(head++; head<=tail; head++) //Build word
-			word += board.getLetterAt(row, head);
-		
-		return dict.dictionaryCheck(word); //Check word legality
+		for( ; head<=tail; head++) //Build word
+			word += stagingBoard.getLetterAt(row, head);
+		ui.printMessage("Checking "+word, false);
+		result = dict.dictionaryCheck(word); //Check word legality
+		if(result == false)
+			ui.printMessage(" -> Illegal.", true);
+		else
+			ui.printMessage(" -> Legal", true);
+		return result;
 	}
 	
 	public boolean checkVertical(int row, int column){
 		int head = row;
 		int tail = row;
+		boolean result = false;
 		String word = "";
-		while(head > 1 && board.getLetterAt(head-1, column) != Board.FREE_LOCATION) //Find start of word
+		while(head > 1 && stagingBoard.getLetterAt(head-1, column) != Board.FREE_LOCATION) //Find start of word
 			head--;
-		while(tail < Board.MAX_ROW && board.getLetterAt(tail, column+1) != Board.FREE_LOCATION) //Find end of word
+		while(tail < Board.MAX_ROW && stagingBoard.getLetterAt(tail+1, column) != Board.FREE_LOCATION) //Find end of word
 			tail++;
 		for( ; head<=tail; head++)
-			word += board.getLetterAt(head, column); //Build word
-		
-		return dict.dictionaryCheck(word); //Check word legality
+			word += stagingBoard.getLetterAt(head, column); //Build word
+		ui.printMessage("Checking "+word, false);
+		result = dict.dictionaryCheck(word); //Check word legality
+		if(result == false)
+			ui.printMessage(" -> Illegal.", true);
+		else
+			ui.printMessage(" -> Legal", true);
+		return result;
 	}
 	
 	public int calculatePlacementPoints(String wordPlayed, int row, int column, Direction dir){
