@@ -1,3 +1,5 @@
+package Assignment5;
+
 public class Word {
 	
 	private int startRow, startColumn, direction;
