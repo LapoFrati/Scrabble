@@ -51,8 +51,16 @@ public class Bot {
 				return -1;
 			}
 			
+			public dagNode getChild(int i) {
+				return children.get(i);
+			}
+			
 			public dagNode getLastChild() {
 				return children.get(children.size()-1);
+			}
+			
+			public boolean isValid() {
+				return el.valid;
 			}
 			
 			public void print (int tabs) {
@@ -79,13 +87,9 @@ public class Bot {
 			String word = "";
 			File inputFile = new File(inputFileName);
 			Scanner in = new Scanner(inputFile);
-			int i = 0;
 			while (in.hasNextLine()) {
 				word = in.nextLine();
 				add(root, word);
-				i++;
-				if(i%1024 == 0)
-					System.out.println(i);
 			}
 			in.close();
 		}
@@ -93,6 +97,8 @@ public class Bot {
 		public void add(dagNode node, String word) {
 			for (int i = 1; i <= word.length(); i++) {
 				String newWord = new StringBuilder(word.substring(0, i)).reverse().toString() + "@" + word.substring(i);
+				if (newWord.charAt(newWord.length()-1) == '@')
+					newWord = newWord.substring(0, newWord.length()-1);
 				recAdd(node, newWord);
 			}
 		}
@@ -101,7 +107,7 @@ public class Bot {
 			if (word.length() != 0) {
 				int index = node.hasChild(word.charAt(0));
 				if (index != -1) {
-					if(word.length() == 1 && !node.children.get(index).el.valid)
+					if(word.length() == 1)
 						node.children.get(index).el.valid = true;
 					else
 						recAdd(node.children.get(index), word.substring(1));
@@ -117,10 +123,75 @@ public class Bot {
 			root.print(1);
 		}
 		
+		public boolean isFreePrevLoc(Board board, int dir, int row, int column) {
+			// the second conditions are not evaluated if the first ones are true
+			// -> no bound errors
+			if (dir == Word.HORIZONTAL)
+				return (column == 0 || board.getSqContents(row, column-1) == Board.EMPTY);
+			else
+				return (row == 0 || board.getSqContents(row-1, column) == Board.EMPTY);
+		}
+		
+		public boolean isFreeNextLoc(Board board, int dir, int row, int column) {
+			// the second conditions are not evaluated if the first ones are true
+			// -> no bound errors
+			if (dir == Word.HORIZONTAL)
+				return (column == Board.SIZE-1 || board.getSqContents(row, column+1) == Board.EMPTY);
+			else
+				return (row == Board.SIZE-1 || board.getSqContents(row+1, column) == Board.EMPTY);
+		}
+		
+		public void visit (ArrayList<Tile> tiles, Board board, int actualRow, int actualColumn, int dir, dagNode node, String word, boolean goingBackward, int initialRow, int initialColumn) {
+			if (actualRow >= 0 && actualColumn >= 0 && actualRow < Board.SIZE && actualColumn < Board.SIZE) {
+				char nextLetter = board.getSqContents(actualRow, actualColumn);
+				if (nextLetter != Board.EMPTY) {
+					int i = node.hasChild(nextLetter);
+					if (i != -1) {
+						if (node.getChild(i).isValid() && goingBackward && isFreePrevLoc(board,dir,actualRow,actualColumn)) {
+							String newWord = nextLetter + (new StringBuilder(word).reverse().toString());
+							legalWords.add(new Word(actualRow,actualColumn,dir,newWord));
+						}
+						if (node.getChild(i).isValid() && !goingBackward && isFreeNextLoc(board,dir,actualRow,actualColumn)) {
+							String newWord = "";
+							int j = 0;
+							while (word.charAt(j) != '@') {
+								newWord += word.charAt(j);
+								j++;
+							}
+							newWord += word.substring(j+1);
+							if (dir == Word.HORIZONTAL)
+								legalWords.add(new Word(actualRow,initialColumn-j+1,dir,newWord));
+							else
+								legalWords.add(new Word(initialColumn-j+1,actualColumn,dir,newWord));
+						}
+						int newRow = actualRow, newColumn = actualColumn;
+						String newWord = word + nextLetter;
+						if (dir == Word.HORIZONTAL) {
+							if (goingBackward)
+								newColumn--;
+							else
+								newColumn++;
+						}
+						else {
+							if (goingBackward)
+								newRow--;
+							else
+								newRow++;
+						}
+						visit(tiles,board,newRow,newColumn,dir,node.getChild(i),newWord,goingBackward,initialRow,initialColumn);
+					}
+				}
+				else { // use player's tiles
+					
+				}
+			}
+		}
+		
 	}
 	
 	public Bot () throws FileNotFoundException {
 		GADDAG gad = new GADDAG();
+		legalWords = null;
 		//gad.print();
 		word.setWord(0, 0, Word.HORIZONTAL, "HELLO");
 		letters = "XYZ";
@@ -134,6 +205,9 @@ public class Bot {
 		// return the corresponding commandCode from UI
 		// if a play, put the start position and letters into word
 		// if an exchange, put the characters into letters
+		legalWords = new LinkedList<Word>();
+		// best word search
+		legalWords = null;
 		return(UI.COMMAND_PASS);
 	}
 	
