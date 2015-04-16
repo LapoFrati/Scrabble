@@ -15,7 +15,7 @@ public class Node {
 	}
 		
 	public Node addChild (char letter) {
-		int index = ((int) letter) - ((int) 'a');
+		int index = ((int) letter) - ((int) 'A');
 		if (children[index] == null) {
 			children[index] = new Node();
 		}
@@ -27,12 +27,12 @@ public class Node {
 	}
 	
 	public Node getChild (char letter) {
-		int index = ((int) letter) - ((int) 'a');
+		int index = ((int) letter) - ((int) 'A');
 		return(children[index]);	
 	}
 
 	public boolean isChild (char letter) {
-		int index = ((int) letter) - ((int) 'a');
+		int index = ((int) letter) - ((int) 'A');
 		return(children[index]!=null);
 	}
 
