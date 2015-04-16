@@ -21,21 +21,31 @@ public class Bot {
 		
 		private class dagNode {
 			
-			public char letter;
+			private class Element {
+				public char letter;
+				public boolean valid;
+				
+				public Element (char letter, boolean valid) {
+					this.letter = letter;
+					this.valid = valid;
+				}
+			}
+			
+			public Element el;
 			public ArrayList<dagNode> children;
 			
-			public dagNode (char letter) {
-				this.letter = letter;
+			public dagNode (char letter, boolean valid) {
+				el = new Element(letter, valid);
 				children = new ArrayList<dagNode>();
 			}
 			
-			public void addChild (char letter) {
-				children.add(new dagNode(letter));
+			public void addChild (char letter, boolean valid) {
+				children.add(new dagNode(letter, valid));
 			}
 			
 			public int hasChild (char letter) {
 				for (dagNode child : children) {
-					if (child.letter == letter)
+					if (child.el.letter == letter)
 						return children.indexOf(child);
 				}
 				return -1;
@@ -46,7 +56,11 @@ public class Bot {
 			}
 			
 			public void print (int tabs) {
-				System.out.println(letter);
+				System.out.print(el.letter);
+				if (el.valid)
+					System.out.println("V");
+				else
+					System.out.println("");
 				for (dagNode child : children) {
 					for (int i = 0; i < tabs; i++) {
 						System.out.print('\t');
@@ -61,7 +75,7 @@ public class Bot {
 		
 		public GADDAG () throws FileNotFoundException {
 			
-			root = new dagNode('@');
+			root = new dagNode('@',false);
 			String word = "";
 			File inputFile = new File(inputFileName);
 			Scanner in = new Scanner(inputFile);
@@ -70,7 +84,8 @@ public class Bot {
 				word = in.nextLine();
 				add(root, word);
 				i++;
-				System.out.println(i);
+				if(i%1024 == 0)
+					System.out.println(i);
 			}
 			in.close();
 		}
@@ -84,8 +99,17 @@ public class Bot {
 		
 		private void recAdd(dagNode node, String word) {
 			if (word.length() != 0) {
-				node.addChild(word.charAt(0));
-				recAdd(node.getLastChild(), word.substring(1));
+				int index = node.hasChild(word.charAt(0));
+				if (index != -1) {
+					if(word.length() == 1 && !node.children.get(index).el.valid)
+						node.children.get(index).el.valid = true;
+					else
+						recAdd(node.children.get(index), word.substring(1));
+				}
+				else {
+					node.addChild(word.charAt(0),(word.length() == 1));
+					recAdd(node.getLastChild(), word.substring(1));
+				}
 			}
 		}
 		
@@ -97,7 +121,7 @@ public class Bot {
 	
 	public Bot () throws FileNotFoundException {
 		GADDAG gad = new GADDAG();
-		gad.print();
+		//gad.print();
 		word.setWord(0, 0, Word.HORIZONTAL, "HELLO");
 		letters = "XYZ";
 	}
