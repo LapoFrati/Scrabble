@@ -266,4 +266,84 @@ public class Bot {
 		// should not change
 		return(letters);
 	}
+	
+	public Word monteCarlo (LinkedList<Word> legalWords)
+	{
+		Word bestWord = new Word();
+		Word currentWord = new Word();
+		int wordValue, counter, xCord, yCord, currentWordDirection, multiplier, wordMult, letterValue;
+		int bestWordValue = 0;
+		String currentWordLetters;
+		
+		for(counter = 0; counter < legalWords.size(); counter++)
+		{
+		currentWord = legalWords.get(counter);
+			
+		wordValue = 0;	
+		wordMult = 1;
+			
+		xCord = currentWord.getStartColumn();
+		yCord = currentWord.getStartRow();
+		currentWordDirection = currentWord.getDirection();
+		currentWordLetters = currentWord.getLetters();
+		
+		for(int letterCounter = 0; letterCounter < currentWordLetters.length(); letterCounter++)
+		{
+			if(currentWordDirection == 1)
+			{
+				letterValue = Tile.getValue(currentWordLetters.charAt(letterCounter));
+				multiplier = Board.SQ_VALUE[xCord][yCord];
+					if(multiplier == 2)
+					{
+						letterValue = letterValue *2;
+					}
+					if(multiplier == 3)
+					{
+						letterValue = letterValue *3;
+					}
+					if(multiplier == 4)
+					{
+						wordMult = wordMult * 2;
+					}
+					if(multiplier == 5)
+					{
+						wordMult = wordMult * 3;
+					}
+					wordValue = wordValue + letterValue;
+					yCord++;
+			}
+			if(currentWordDirection == 0)
+			{
+				letterValue = Tile.getValue(currentWordLetters.charAt(letterCounter));
+				multiplier = Board.SQ_VALUE[xCord][yCord];
+					if(multiplier == 2)
+					{
+						letterValue = letterValue *2;
+					}
+					if(multiplier == 3)
+					{
+						letterValue = letterValue *3;
+					}
+					if(multiplier == 4)
+					{
+						wordMult = wordMult * 2;
+					}
+					if(multiplier == 5)
+					{
+						wordMult = wordMult * 3;
+					}
+					wordValue = wordValue + letterValue;
+					xCord++;
+			}
+		}
+		wordValue = wordValue* wordMult;
+		
+		if(wordValue > bestWordValue)
+		{
+			wordValue = bestWordValue;	
+			bestWord = currentWord;
+		}
+	}
+	return bestWord;
+	}
 }
