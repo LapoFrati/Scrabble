@@ -142,6 +142,11 @@ public class Bot {
 		}
 		
 		public void visit (ArrayList<Tile> tiles, Board board, int actualRow, int actualColumn, int dir, dagNode node, String word, boolean goingBackward, int initialRow, int initialColumn) {
+			/* TODO:
+			 *  - le parole già sulla board non devono essere accettate
+			 *  - evitare chiamate ridondanti (tile)
+			 *  - cercare di ridurre la dimensione
+			 */
 			if (actualRow >= 0 && actualColumn >= 0 && actualRow < Board.SIZE && actualColumn < Board.SIZE) {
 				char nextLetter = board.getSqContents(actualRow, actualColumn);
 				if (nextLetter != Board.EMPTY) {
@@ -158,11 +163,12 @@ public class Bot {
 								newWord += word.charAt(j);
 								j++;
 							}
+							newWord = new StringBuilder(newWord).reverse().toString();
 							newWord += word.substring(j+1);
 							if (dir == Word.HORIZONTAL)
 								legalWords.add(new Word(actualRow,initialColumn-j+1,dir,newWord));
 							else
-								legalWords.add(new Word(initialColumn-j+1,actualColumn,dir,newWord));
+								legalWords.add(new Word(initialRow-j+1,actualColumn,dir,newWord));
 						}
 						int newRow = actualRow, newColumn = actualColumn;
 						String newWord = word + nextLetter;
