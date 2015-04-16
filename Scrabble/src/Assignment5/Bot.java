@@ -182,7 +182,47 @@ public class Bot {
 					}
 				}
 				else { // use player's tiles
-					
+					ArrayList<Tile> tilesCopy = new ArrayList<Tile>(tiles);
+					for (Tile t : tiles) {
+						nextLetter = t.getFace();
+						int i = node.hasChild(nextLetter);
+						if (i != -1) {
+							if (node.getChild(i).isValid() && goingBackward && isFreePrevLoc(board,dir,actualRow,actualColumn)) {
+								String newWord = nextLetter + (new StringBuilder(word).reverse().toString());
+								legalWords.add(new Word(actualRow,actualColumn,dir,newWord));
+							}
+							if (node.getChild(i).isValid() && !goingBackward && isFreeNextLoc(board,dir,actualRow,actualColumn)) {
+								String newWord = "";
+								int j = 0;
+								while (word.charAt(j) != '@') {
+									newWord += word.charAt(j);
+									j++;
+								}
+								newWord += word.substring(j+1);
+								if (dir == Word.HORIZONTAL)
+									legalWords.add(new Word(actualRow,initialColumn-j+1,dir,newWord));
+								else
+									legalWords.add(new Word(initialColumn-j+1,actualColumn,dir,newWord));
+							}
+							int newRow = actualRow, newColumn = actualColumn;
+							String newWord = word + nextLetter;
+							if (dir == Word.HORIZONTAL) {
+								if (goingBackward)
+									newColumn--;
+								else
+									newColumn++;
+							}
+							else {
+								if (goingBackward)
+									newRow--;
+								else
+									newRow++;
+							}
+							tilesCopy.remove(tiles.indexOf(t));
+							visit(new ArrayList<Tile>(tilesCopy),board,newRow,newColumn,dir,node.getChild(i),newWord,goingBackward,initialRow,initialColumn);
+							tilesCopy.add(tiles.indexOf(t), t);
+						}
+					}
 				}
 			}
 		}
