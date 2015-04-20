@@ -268,15 +268,16 @@ public class Bot {
 		for(int i = 0; i<Board.SIZE; i++){
 			for(int j = 0; j<Board.SIZE; j++){
 				if(board.getSqContents(i, j) != Board.EMPTY){
-					if( 	((i>0) && board.getSqContents(i-1, j) == Board.EMPTY)
-						||	((i<Board.SIZE-1) && board.getSqContents(i+1, j) == Board.EMPTY)){
-						gad.visit(player.getFrame().getAllTiles(), board, i, j, 0, gad.root, "", false, i, j, false);
-					}
-					if( 	((j>0) && board.getSqContents(i, j-1) == Board.EMPTY)
-							||	((j<Board.SIZE-1) && board.getSqContents(i, j+1) == Board.EMPTY)){
-						gad.visit(player.getFrame().getAllTiles(), board, i, j, 1, gad.root, "", false, i, j, false);
-					}
-				}
+					if( gad.isFreeNextLoc(board, Word.HORIZONTAL, i, j) 
+						|| gad.isFreeNextLoc(board, Word.HORIZONTAL, i, j) )
+						
+						gad.visit(player.getFrame().getAllTiles(), board, i, j, Word.HORIZONTAL, gad.root, "", false, i, j, false);
+						
+					if( gad.isFreeNextLoc(board, Word.VERTICAL, i, j) 
+						|| gad.isFreeNextLoc(board, Word.VERTICAL, i, j) )
+						
+						gad.visit(player.getFrame().getAllTiles(), board, i, j, Word.VERTICAL, gad.root, "", false, i, j, false);
+				}	
 			}
 		}
 		if(legalWords.size() == 0){
