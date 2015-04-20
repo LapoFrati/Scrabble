@@ -78,10 +78,12 @@ public class Frame {
 	public boolean isAvailable (String letters) {
 		Frame copyFrame = new Frame(this);
 		boolean found = true;
+		char letter;
 		int indexLetters = 0, indexTiles;
 		
 		while ( (indexLetters<letters.length()) && found) {
-			indexTiles = find(letters.charAt(indexLetters));
+			letter = letters.charAt(indexLetters);
+			indexTiles = copyFrame.find(letter);
 			if (indexTiles == -1) {
 				found = false;
 			}

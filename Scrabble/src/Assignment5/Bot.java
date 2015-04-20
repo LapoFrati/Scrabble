@@ -252,7 +252,7 @@ public class Bot {
 		letters = "XYZ";
 	}
 	
-	public int getCommand (Player player, Board board) {
+	public int getCommand (Player player, Board board, Dictionary dictionary) {
 		// make a decision on the play here
 		// use board.getSqContents to check what is on the board
 		// use Board.SQ_VALUE to check the multipliers
@@ -260,9 +260,6 @@ public class Bot {
 		// return the corresponding commandCode from UI
 		// if a play, put the start position and letters into word
 		// if an exchange, put the characters into letters
-		legalWords = new LinkedList<Word>();
-		// best word search
-		legalWords = null;
 		return(UI.COMMAND_PASS);
 	}
 	

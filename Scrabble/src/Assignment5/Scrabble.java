@@ -81,7 +81,7 @@ import java.io.FileNotFoundException;
 			do {
 				if (currentPlayerId == BOT_ID) {
 					ui.displayPrompt(currentPlayer);
-					commandCode = bot.getCommand(currentPlayer,board);
+					commandCode = bot.getCommand(currentPlayer,board,dictionary);
 					ui.displayCommand(players[BOT_ID],commandCode,bot.getWord(),bot.getLetters());
 				}
 				else {

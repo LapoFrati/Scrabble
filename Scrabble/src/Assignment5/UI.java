@@ -210,11 +210,12 @@ public class UI {
 		for (Tile tile : tiles) {
 			System.out.print(Character.toString(tile.getFace()) + Integer.toString(tile.getValue()) + " ");
 		}
+		System.out.println();
 		return;
 	}
 	
 	public void displayCommand (Player player, int commandCode, Word word, String letters) {
-		System.out.print(player.getName() + "enters: ");
+		System.out.print(player.getName() + " enters: ");
 		switch (commandCode) {
 			case COMMAND_QUIT :
 				System.out.println("QUIT");

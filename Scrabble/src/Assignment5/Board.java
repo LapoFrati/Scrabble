@@ -2,6 +2,7 @@ package Assignment5;
 
 import java.util.ArrayList;
 
+
 public class Board {
 	
 	public static final int SINGLE_LETTER = 1;

@@ -28,7 +28,8 @@ public class Tile {
 	public boolean matches (char inputChar) {
 		boolean match;
 		if ( ( (inputChar>='a') && (inputChar<='z') && (face == BLANK) ) ||
-		     ( (inputChar>='A') && (inputChar<='Z') && (face == inputChar) ) ) {
+		     ( (inputChar>='A') && (inputChar<='Z') && (face == inputChar) ) ||
+		     ( (inputChar == BLANK) && (face == BLANK) ) ) {
 			match = true;
 		}
 		else {
