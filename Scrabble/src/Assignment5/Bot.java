@@ -142,11 +142,6 @@ public class Bot {
 		}
 		
 		public void visit (ArrayList<Tile> tiles, Board board, int actualRow, int actualColumn, int dir, dagNode node, String word, boolean goingBackward, int initialRow, int initialColumn, boolean tileUsed) {
-			/* TODO:
-			 *  - le parole già sulla board non devono essere accettate V
-			 *  - evitare chiamate ridondanti (tile)
-			 *  - cercare di ridurre la dimensione
-			 */
 			if (actualRow >= 0 && actualColumn >= 0 && actualRow < Board.SIZE && actualColumn < Board.SIZE) {
 				char nextLetter = board.getSqContents(actualRow, actualColumn);
 				if (nextLetter != Board.EMPTY) {
@@ -193,44 +188,54 @@ public class Bot {
 				else { // use player's tiles
 					tileUsed = true;
 					ArrayList<Tile> tilesCopy = new ArrayList<Tile>(tiles);
-					for (Tile t : tiles) {
-						nextLetter = t.getFace();
-						int i = node.hasChild(nextLetter);
-						if (i != -1) {
-							if (node.getChild(i).isValid() && goingBackward && isFreePrevLoc(board,dir,actualRow,actualColumn)) {
-								String newWord = nextLetter + (new StringBuilder(word).reverse().toString());
-								legalWords.add(new Word(actualRow,actualColumn,dir,newWord));
+					for (char c = 'A'; c <= 'Z'; c++) {
+						boolean isIn = false;
+						Tile t = null;
+						for (Tile tile : tiles)
+							if (tile.matches(c)) {
+								isIn = true;
+								t = tile;
+								break;
 							}
-							if (node.getChild(i).isValid() && !goingBackward && isFreeNextLoc(board,dir,actualRow,actualColumn)) {
-								String newWord = "";
-								int j = 0;
-								while (word.charAt(j) != '@') {
-									newWord += word.charAt(j);
-									j++;
+						if (isIn) {
+							nextLetter = t.getFace();
+							int i = node.hasChild(nextLetter);
+							if (i != -1) {
+								if (node.getChild(i).isValid() && goingBackward && isFreePrevLoc(board,dir,actualRow,actualColumn)) {
+									String newWord = nextLetter + (new StringBuilder(word).reverse().toString());
+									legalWords.add(new Word(actualRow,actualColumn,dir,newWord));
 								}
-								newWord += word.substring(j+1);
-								if (dir == Word.HORIZONTAL)
-									legalWords.add(new Word(actualRow,initialColumn-j+1,dir,newWord));
-								else
-									legalWords.add(new Word(initialColumn-j+1,actualColumn,dir,newWord));
+								if (node.getChild(i).isValid() && !goingBackward && isFreeNextLoc(board,dir,actualRow,actualColumn)) {
+									String newWord = "";
+									int j = 0;
+									while (word.charAt(j) != '@') {
+										newWord += word.charAt(j);
+										j++;
+									}
+									newWord += word.substring(j+1);
+									if (dir == Word.HORIZONTAL)
+										legalWords.add(new Word(actualRow,initialColumn-j+1,dir,newWord));
+									else
+										legalWords.add(new Word(initialColumn-j+1,actualColumn,dir,newWord));
+								}
+								int newRow = actualRow, newColumn = actualColumn;
+								String newWord = word + nextLetter;
+								if (dir == Word.HORIZONTAL) {
+									if (goingBackward)
+										newColumn--;
+									else
+										newColumn++;
+								}
+								else {
+									if (goingBackward)
+										newRow--;
+									else
+										newRow++;
+								}
+								tilesCopy.remove(tiles.indexOf(t));
+								visit(new ArrayList<Tile>(tilesCopy),board,newRow,newColumn,dir,node.getChild(i),newWord,goingBackward,initialRow,initialColumn,tileUsed);
+								tilesCopy.add(tiles.indexOf(t), t);
 							}
-							int newRow = actualRow, newColumn = actualColumn;
-							String newWord = word + nextLetter;
-							if (dir == Word.HORIZONTAL) {
-								if (goingBackward)
-									newColumn--;
-								else
-									newColumn++;
-							}
-							else {
-								if (goingBackward)
-									newRow--;
-								else
-									newRow++;
-							}
-							tilesCopy.remove(tiles.indexOf(t));
-							visit(new ArrayList<Tile>(tilesCopy),board,newRow,newColumn,dir,node.getChild(i),newWord,goingBackward,initialRow,initialColumn,tileUsed);
-							tilesCopy.add(tiles.indexOf(t), t);
 						}
 					}
 				}
