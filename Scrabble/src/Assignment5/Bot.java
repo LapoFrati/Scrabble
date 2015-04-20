@@ -16,6 +16,7 @@ public class Bot {
 	private String letters;
 	private LinkedList<Word> legalWords;
 	private String inputFileName = "sowpods.txt";
+	private GADDAG gad;
 	
 	private class GADDAG {
 		
@@ -79,7 +80,7 @@ public class Bot {
 			
 		}
 		
-		private dagNode root;
+		public dagNode root;
 		
 		public GADDAG () throws FileNotFoundException {
 			
@@ -245,7 +246,7 @@ public class Bot {
 	}
 	
 	public Bot () throws FileNotFoundException {
-		GADDAG gad = new GADDAG();
+		gad = new GADDAG();
 		legalWords = null;
 		//gad.print();
 		word.setWord(0, 0, Word.HORIZONTAL, "HELLO");
@@ -260,7 +261,31 @@ public class Bot {
 		// return the corresponding commandCode from UI
 		// if a play, put the start position and letters into word
 		// if an exchange, put the characters into letters
-		return(UI.COMMAND_PASS);
+		
+		legalWords = new LinkedList<Word>();
+		
+		for(int i = 0; i<Board.SIZE; i++){
+			for(int j = 0; j<Board.SIZE; j++){
+				if(board.getSqContents(i, j) != Board.EMPTY){
+					if( 	((i>0) && board.getSqContents(i-1, j) == Board.EMPTY)
+						||	((i<Board.SIZE-1) && board.getSqContents(i+1, j) == Board.EMPTY)){
+						gad.visit(player.getFrame().getAllTiles(), board, i, j, 0, gad.root, "", false, i, j, false);
+					}
+					if( 	((j>0) && board.getSqContents(i, j-1) == Board.EMPTY)
+							||	((j<Board.SIZE-1) && board.getSqContents(i, j+1) == Board.EMPTY)){
+						gad.visit(player.getFrame().getAllTiles(), board, i, j, 1, gad.root, "", false, i, j, false);
+					}
+				}
+			}
+		}
+		if(legalWords.size() == 0){
+			//TODO: implement exchange
+			return UI.COMMAND_EXCHANGE;
+		}
+		else{
+			getHighestValueWord(board);
+			return UI.COMMAND_PLAY;
+		}
 	}
 	
 	public Word getWord () {
@@ -353,20 +378,17 @@ public class Bot {
 	return bestWord;
 	}
 	
-	public Word getHighestValueWord (LinkedList<Word> legalWords, Board board)
+	public void getHighestValueWord ( Board board )
 	{
-		Word bestWord = new Word();
 		int bestValue = 0, currentValue;
 		
-		for(Word word : legalWords){
-			currentValue = board.getTotalWordScore(word);
+		for(Word tempWord : legalWords){
+			currentValue = board.getTotalWordScore(tempWord);
 			if(currentValue > bestValue){
 				bestValue = currentValue;
-				bestWord = word;
+				word = tempWord;
 			}
 		}
-
-		return bestWord;
 	}
 	
 }
