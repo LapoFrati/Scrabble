@@ -352,4 +352,21 @@ public class Bot {
 	}
 	return bestWord;
 	}
+	
+	public Word getHighestValueWord (LinkedList<Word> legalWords, Board board)
+	{
+		Word bestWord = new Word();
+		int bestValue = 0, currentValue;
+		
+		for(Word word : legalWords){
+			currentValue = board.getTotalWordScore(word);
+			if(currentValue > bestValue){
+				bestValue = currentValue;
+				bestWord = word;
+			}
+		}
+
+		return bestWord;
+	}
+	
 }
