@@ -261,6 +261,7 @@ public class Bot {
 		// return the corresponding commandCode from UI
 		// if a play, put the start position and letters into word
 		// if an exchange, put the characters into letters
+		int tilesToExchange;
 		
 		legalWords = new LinkedList<Word>();
 		
@@ -279,7 +280,15 @@ public class Bot {
 			}
 		}
 		if(legalWords.size() == 0){
-			//TODO: implement exchange
+			ArrayList<Tile> rack = player.getFrame().getAllTiles();
+			letters = "";
+			
+			tilesToExchange = Math.round(((float)Math.random()*3)+2);	
+			
+			for(int i = 0; i<tilesToExchange; i++){
+				letters = letters + rack.get(i).getFace();
+			}
+			
 			return UI.COMMAND_EXCHANGE;
 		}
 		else{
@@ -390,5 +399,4 @@ public class Bot {
 			}
 		}
 	}
-	
 }
