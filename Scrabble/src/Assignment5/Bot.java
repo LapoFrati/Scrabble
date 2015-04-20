@@ -141,9 +141,9 @@ public class Bot {
 				return (row == Board.SIZE-1 || board.getSqContents(row+1, column) == Board.EMPTY);
 		}
 		
-		public void visit (ArrayList<Tile> tiles, Board board, int actualRow, int actualColumn, int dir, dagNode node, String word, boolean goingBackward, int initialRow, int initialColumn) {
+		public void visit (ArrayList<Tile> tiles, Board board, int actualRow, int actualColumn, int dir, dagNode node, String word, boolean goingBackward, int initialRow, int initialColumn, boolean tileUsed) {
 			/* TODO:
-			 *  - le parole già sulla board non devono essere accettate
+			 *  - le parole già sulla board non devono essere accettate V
 			 *  - evitare chiamate ridondanti (tile)
 			 *  - cercare di ridurre la dimensione
 			 */
@@ -154,7 +154,8 @@ public class Bot {
 					if (i != -1) {
 						if (node.getChild(i).isValid() && goingBackward && isFreePrevLoc(board,dir,actualRow,actualColumn)) {
 							String newWord = nextLetter + (new StringBuilder(word).reverse().toString());
-							legalWords.add(new Word(actualRow,actualColumn,dir,newWord));
+							if (tileUsed)
+								legalWords.add(new Word(actualRow,actualColumn,dir,newWord));
 						}
 						if (node.getChild(i).isValid() && !goingBackward && isFreeNextLoc(board,dir,actualRow,actualColumn)) {
 							String newWord = "";
@@ -165,10 +166,12 @@ public class Bot {
 							}
 							newWord = new StringBuilder(newWord).reverse().toString();
 							newWord += word.substring(j+1);
-							if (dir == Word.HORIZONTAL)
-								legalWords.add(new Word(actualRow,initialColumn-j+1,dir,newWord));
-							else
-								legalWords.add(new Word(initialRow-j+1,actualColumn,dir,newWord));
+							if (tileUsed) {
+								if (dir == Word.HORIZONTAL)
+									legalWords.add(new Word(actualRow,initialColumn-j+1,dir,newWord));
+								else
+									legalWords.add(new Word(initialRow-j+1,actualColumn,dir,newWord));
+							}
 						}
 						int newRow = actualRow, newColumn = actualColumn;
 						String newWord = word + nextLetter;
@@ -184,10 +187,11 @@ public class Bot {
 							else
 								newRow++;
 						}
-						visit(tiles,board,newRow,newColumn,dir,node.getChild(i),newWord,goingBackward,initialRow,initialColumn);
+						visit(tiles,board,newRow,newColumn,dir,node.getChild(i),newWord,goingBackward,initialRow,initialColumn,tileUsed);
 					}
 				}
 				else { // use player's tiles
+					tileUsed = true;
 					ArrayList<Tile> tilesCopy = new ArrayList<Tile>(tiles);
 					for (Tile t : tiles) {
 						nextLetter = t.getFace();
@@ -225,7 +229,7 @@ public class Bot {
 									newRow++;
 							}
 							tilesCopy.remove(tiles.indexOf(t));
-							visit(new ArrayList<Tile>(tilesCopy),board,newRow,newColumn,dir,node.getChild(i),newWord,goingBackward,initialRow,initialColumn);
+							visit(new ArrayList<Tile>(tilesCopy),board,newRow,newColumn,dir,node.getChild(i),newWord,goingBackward,initialRow,initialColumn,tileUsed);
 							tilesCopy.add(tiles.indexOf(t), t);
 						}
 					}
