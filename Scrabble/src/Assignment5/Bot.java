@@ -150,11 +150,13 @@ public class Bot {
 				if (nextLetter != Board.EMPTY) {
 					int i = node.hasChild(nextLetter);
 					if (i != -1) {
+						/*
 						if (node.getChild(i).isValid() && goingBackward && isFreePrevLoc(board,dir,actualRow,actualColumn)) {
 							String newWord = nextLetter + (new StringBuilder(word).reverse().toString());
 							if (tileUsed)
 								legalWords.add(new Word(actualRow,actualColumn,dir,newWord));
 						}
+						*/
 						if (node.getChild(i).isValid() && !goingBackward && isFreeNextLoc(board,dir,actualRow,actualColumn)) {
 							String newWord = "";
 							int j = 0;
@@ -188,8 +190,14 @@ public class Bot {
 						visit(tiles,board,newRow,newColumn,dir,node.getChild(i),newWord,goingBackward,initialRow,initialColumn,tileUsed);
 					}
 				}
-				else { // use player's tiles
-					tileUsed = true;
+				else { // use player's tiles or change direction
+					int h = node.hasChild('@');
+					if (goingBackward && h != -1) {
+						if (dir == Word.HORIZONTAL)
+							visit(tiles,board,actualRow,initialColumn+1,dir,node.getChild(h),word+"@",false,initialRow,initialColumn,tileUsed);
+						else
+							visit(tiles,board,initialRow+1,actualColumn,dir,node.getChild(h),word+"@",false,initialRow,initialColumn,tileUsed);
+					}
 					ArrayList<Tile> tilesCopy = new ArrayList<Tile>(tiles);
 					for (char c = 'A'; c <= 'Z'; c++) {
 						boolean isIn = false;
@@ -201,13 +209,16 @@ public class Bot {
 								break;
 							}
 						if (isIn) {
+							tileUsed = true;
 							nextLetter = t.getFace();
 							int i = node.hasChild(nextLetter);
 							if (i != -1) {
+								/*
 								if (node.getChild(i).isValid() && goingBackward && isFreePrevLoc(board,dir,actualRow,actualColumn)) {
 									String newWord = nextLetter + (new StringBuilder(word).reverse().toString());
 									legalWords.add(new Word(actualRow,actualColumn,dir,newWord));
 								}
+								*/
 								if (node.getChild(i).isValid() && !goingBackward && isFreeNextLoc(board,dir,actualRow,actualColumn)) {
 									String newWord = "";
 									int j = 0;
@@ -247,7 +258,7 @@ public class Bot {
 	}
 	
 	public Bot () throws FileNotFoundException {
-		gad = new GADDAG();
+		//gad = new GADDAG();
 		legalWords = null;
 		//gad.print();
 		word.setWord(0, 0, Word.HORIZONTAL, "HELLO");
