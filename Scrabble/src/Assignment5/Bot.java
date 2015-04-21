@@ -19,6 +19,7 @@ public class Bot {
 	private GADDAG gad;
 	private Player bot;
 	private Dictionary dictionary;
+	private Board myBoard;
 	private boolean noWordsOnBoard = true;
 	
 	private class GADDAG {
@@ -286,6 +287,7 @@ public class Bot {
 		// if an exchange, put the characters into letters
 		bot = player;
 		this.dictionary = dictionary;
+		myBoard = board;
 		
 		legalWords = new LinkedList<Word>();
 		
@@ -432,4 +434,63 @@ public class Bot {
 			}
 		}
 	}
+	
+	boolean checkSides(Word word){
+		ArrayList<String> temp = new ArrayList<String>();
+		Word tempWord;
+		
+		for(int i = 0; i < word.getLength(); i++){
+			if(word.getDirection() == Word.HORIZONTAL){
+				int row = word.getStartRow();
+				int column = word.getStartColumn()+i;
+				String s = Character.toString(myBoard.getSqContents(row, column));
+				tempWord = new Word(row, column, Word.VERTICAL, s );
+				temp.add(myGrowWord(tempWord).getLetters());
+			} else {
+				int row = word.getStartRow()+i;
+				int column = word.getStartColumn();
+				String s = Character.toString(myBoard.getSqContents(row, column));
+				tempWord = new Word(row, column, Word.HORIZONTAL, s );
+				temp.add(myGrowWord(tempWord).getLetters());
+			}
+		}
+		return dictionary.areWords(temp);
+	}
+	
+	private Word myGrowWord (Word word) {
+		Word newWord;
+		StringBuffer letters = new StringBuffer();
+		int startRow, endRow, startColumn, endColumn, length;
+		
+		startRow = word.getStartRow();
+		startColumn = word.getStartColumn();
+		length = word.getLength();
+		letters.append(word.getLetters());
+		if (word.isVertical()) {
+			endRow = startRow + length - 1;
+			while ( (startRow > 0) && (myBoard.getSqContents(startRow-1,startColumn) != Board.EMPTY) ) {
+				startRow--;
+				letters.insert(0,myBoard.getSqContents(startRow,startColumn));
+			}
+			while ( (endRow < Board.SIZE-1) && (myBoard.getSqContents(endRow+1,startColumn) != Board.EMPTY) ) {
+				endRow++;
+				letters.append(myBoard.getSqContents(endRow,startColumn));
+			}			
+		}		
+		else {  // isHorizontal
+			endColumn = startColumn + length - 1;
+			while ( (startColumn > 0) && (myBoard.getSqContents(startRow,startColumn-1) != Board.EMPTY) ) {
+				startColumn--;
+				letters.insert(0,myBoard.getSqContents(startRow,startColumn));
+			}
+			while ( (endColumn < Board.SIZE-1) && (myBoard.getSqContents(startRow,endColumn+1) != Board.EMPTY) ) {
+				endColumn++;
+				letters.append(myBoard.getSqContents(startRow,endColumn));
+			}						
+		}
+		newWord = new Word (startRow, startColumn, word.getDirection(), letters.toString());
+		
+		return(newWord);
+	}
+	
 }
