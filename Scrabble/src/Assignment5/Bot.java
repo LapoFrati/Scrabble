@@ -169,16 +169,17 @@ public class Bot {
 							}
 							newWord = new StringBuilder(newWord).reverse().toString();
 							newWord += word.substring(j+1);
-							ArrayList<String> test = new ArrayList<String>(1);
-							test.add(newWord);
 							if (tileUsed) {
 								if (dir == Word.HORIZONTAL) {
-									if(board.checkWord(new Word(actualRow,initialColumn-j+1,dir,newWord), bot.getFrame()) == UI.WORD_OK && dictionary.areWords(test))
-										legalWords.add(new Word(actualRow,initialColumn-j+1,dir,newWord));
+									Word tempWord = new Word(actualRow,initialColumn-j+1,dir,newWord);
+									if(board.checkWord(tempWord, bot.getFrame()) == UI.WORD_OK && checkSides(tempWord))
+										legalWords.add(tempWord);
 								}
-								else
-									if(board.checkWord(new Word(initialRow-j+1,actualColumn,dir,newWord), bot.getFrame()) == UI.WORD_OK && dictionary.areWords(test))
-										legalWords.add(new Word(initialRow-j+1,actualColumn,dir,newWord));
+								else {
+									Word tempWord = new Word(initialRow-j+1,actualColumn,dir,newWord);
+									if(board.checkWord(tempWord, bot.getFrame()) == UI.WORD_OK && checkSides(tempWord))
+										legalWords.add(tempWord);
+								}
 							}
 						}
 						int newRow = actualRow, newColumn = actualColumn;
@@ -235,15 +236,16 @@ public class Bot {
 										j++;
 									}
 									newWord += word.substring(j+1);
-									ArrayList<String> test = new ArrayList<String>(1);
-									test.add(newWord);
 									if (dir == Word.HORIZONTAL) {
-										if(board.checkWord(new Word(actualRow,initialColumn-j+1,dir,newWord), bot.getFrame()) == UI.WORD_OK && dictionary.areWords(test))
-											legalWords.add(new Word(actualRow,initialColumn-j+1,dir,newWord));
+										Word tempWord = new Word(actualRow,initialColumn-j+1,dir,newWord);
+										if(board.checkWord(tempWord, bot.getFrame()) == UI.WORD_OK && checkSides(tempWord))
+											legalWords.add(tempWord);
 									}
-									else
-										if(board.checkWord(new Word(initialRow-j+1,actualColumn,dir,newWord), bot.getFrame()) == UI.WORD_OK && dictionary.areWords(test))
-											legalWords.add(new Word(initialRow-j+1,actualColumn,dir,newWord));
+									else {
+										Word tempWord = new Word(initialRow-j+1,actualColumn,dir,newWord);
+										if(board.checkWord(tempWord, bot.getFrame()) == UI.WORD_OK && checkSides(tempWord))
+											legalWords.add(tempWord);
+									}
 								}
 								int newRow = actualRow, newColumn = actualColumn;
 								String newWord = word + nextLetter;
@@ -439,7 +441,7 @@ public class Bot {
 		ArrayList<String> temp = new ArrayList<String>();
 		Word tempWord;
 		
-		for(int i = 0; i < word.getLength(); i++){
+		for(int i = 0; i < word.getLength()-1; i++){
 			if(word.getDirection() == Word.HORIZONTAL){
 				int row = word.getStartRow();
 				int column = word.getStartColumn()+i;
@@ -454,6 +456,7 @@ public class Bot {
 				temp.add(myGrowWord(tempWord).getLetters());
 			}
 		}
+		temp.add(word.getLetters());
 		return dictionary.areWords(temp);
 	}
 	
