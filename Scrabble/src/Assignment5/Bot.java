@@ -17,6 +17,8 @@ public class Bot {
 	private LinkedList<Word> legalWords;
 	private String inputFileName = "sowpods.txt";
 	private GADDAG gad;
+	private Player bot;
+	private Dictionary dictionary;
 	private boolean noWordsOnBoard = true;
 	
 	private class GADDAG {
@@ -166,11 +168,16 @@ public class Bot {
 							}
 							newWord = new StringBuilder(newWord).reverse().toString();
 							newWord += word.substring(j+1);
+							ArrayList<String> test = new ArrayList<String>(1);
+							test.add(newWord);
 							if (tileUsed) {
-								if (dir == Word.HORIZONTAL)
-									legalWords.add(new Word(actualRow,initialColumn-j+1,dir,newWord));
+								if (dir == Word.HORIZONTAL) {
+									if(board.checkWord(new Word(actualRow,initialColumn-j+1,dir,newWord), bot.getFrame()) == UI.WORD_OK && dictionary.areWords(test))
+										legalWords.add(new Word(actualRow,initialColumn-j+1,dir,newWord));
+								}
 								else
-									legalWords.add(new Word(initialRow-j+1,actualColumn,dir,newWord));
+									if(board.checkWord(new Word(initialRow-j+1,actualColumn,dir,newWord), bot.getFrame()) == UI.WORD_OK && dictionary.areWords(test))
+										legalWords.add(new Word(initialRow-j+1,actualColumn,dir,newWord));
 							}
 						}
 						int newRow = actualRow, newColumn = actualColumn;
@@ -227,10 +234,15 @@ public class Bot {
 										j++;
 									}
 									newWord += word.substring(j+1);
-									if (dir == Word.HORIZONTAL)
-										legalWords.add(new Word(actualRow,initialColumn-j+1,dir,newWord));
+									ArrayList<String> test = new ArrayList<String>(1);
+									test.add(newWord);
+									if (dir == Word.HORIZONTAL) {
+										if(board.checkWord(new Word(actualRow,initialColumn-j+1,dir,newWord), bot.getFrame()) == UI.WORD_OK && dictionary.areWords(test))
+											legalWords.add(new Word(actualRow,initialColumn-j+1,dir,newWord));
+									}
 									else
-										legalWords.add(new Word(initialColumn-j+1,actualColumn,dir,newWord));
+										if(board.checkWord(new Word(initialRow-j+1,actualColumn,dir,newWord), bot.getFrame()) == UI.WORD_OK && dictionary.areWords(test))
+											legalWords.add(new Word(initialRow-j+1,actualColumn,dir,newWord));
 								}
 								int newRow = actualRow, newColumn = actualColumn;
 								String newWord = word + nextLetter;
@@ -258,9 +270,8 @@ public class Bot {
 	}
 	
 	public Bot () throws FileNotFoundException {
-		//gad = new GADDAG();
+		gad = new GADDAG();
 		legalWords = null;
-		//gad.print();
 		word.setWord(0, 0, Word.HORIZONTAL, "HELLO");
 		letters = "XYZ";
 	}
@@ -273,7 +284,8 @@ public class Bot {
 		// return the corresponding commandCode from UI
 		// if a play, put the start position and letters into word
 		// if an exchange, put the characters into letters
-		int tilesToExchange;
+		bot = player;
+		this.dictionary = dictionary;
 		
 		legalWords = new LinkedList<Word>();
 		
@@ -298,6 +310,7 @@ public class Bot {
 		}
 		
 		if(legalWords.size() == 0){
+			/*
 			ArrayList<Tile> rack = player.getFrame().getAllTiles();
 			letters = "";
 			
@@ -308,9 +321,11 @@ public class Bot {
 			}
 			
 			return UI.COMMAND_EXCHANGE;
+			*/
+			return UI.COMMAND_PASS;
 		}
 		else{
-			getHighestValueWord(board);
+			getHighestValueWord(board, player, dictionary);
 			return UI.COMMAND_PLAY;
 		}
 	}
@@ -405,10 +420,10 @@ public class Bot {
 	return bestWord;
 	}
 	
-	public void getHighestValueWord ( Board board )
+	public void getHighestValueWord ( Board board, Player player, Dictionary dictionary)
 	{
 		int bestValue = 0, currentValue;
-		
+
 		for(Word tempWord : legalWords){
 			currentValue = board.getTotalWordScore(tempWord);
 			if(currentValue > bestValue){
