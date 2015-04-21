@@ -7,6 +7,7 @@ package Assignment5;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.Scanner;
 
@@ -91,11 +92,12 @@ public class Bot {
 			root = new dagNode('@',false);
 			String word = "";
 			File inputFile = new File(inputFileName);
-			System.out.println("Initializing Bot. Estimated time 30 seconds.");
+			System.out.println("Initializing Bot...");
 			Scanner in = new Scanner(inputFile);
 			while (in.hasNextLine()) {
 				word = in.nextLine();
-				add(root, word);
+				if (word.length() < 8)
+					add(root, word);
 			}
 			in.close();
 		}
@@ -424,6 +426,8 @@ public class Bot {
 	public void getHighestValueWord ( Board board, Player player, Dictionary dictionary)
 	{
 		int bestValue = 0, currentValue;
+		
+		Collections.shuffle(legalWords);
 
 		for(Word tempWord : legalWords){
 			//currentValue = board.getTotalWordScore(tempWord);
