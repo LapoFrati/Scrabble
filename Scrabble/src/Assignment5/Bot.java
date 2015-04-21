@@ -88,6 +88,7 @@ public class Bot {
 			root = new dagNode('@',false);
 			String word = "";
 			File inputFile = new File(inputFileName);
+			System.out.println("Initializing Bot. Estimated time 30 seconds.");
 			Scanner in = new Scanner(inputFile);
 			while (in.hasNextLine()) {
 				word = in.nextLine();
