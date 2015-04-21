@@ -438,26 +438,21 @@ public class Bot {
 	}
 	
 	boolean checkSides(Word word){
-		ArrayList<String> temp = new ArrayList<String>();
-		Word tempWord;
+		boolean check = true;
+		int row = word.getStartRow();
+		int column = word.getStartColumn();
+		int dir = word.getDirection();
+		int opDir = word.getOppositeDirection();
 		
-		for(int i = 0; i < word.getLength()-1; i++){
-			if(word.getDirection() == Word.HORIZONTAL){
-				int row = word.getStartRow();
-				int column = word.getStartColumn()+i;
-				String s = Character.toString(myBoard.getSqContents(row, column));
-				tempWord = new Word(row, column, Word.VERTICAL, s );
-				temp.add(myGrowWord(tempWord).getLetters());
+		for(int i = 0; i < word.getLength()-1 && check; i++){
+			check = check && gad.isFreeNextLoc(myBoard, opDir, row, column) && gad.isFreePrevLoc(myBoard, opDir, row, column);
+			if(dir == Word.HORIZONTAL){
+				column++;
 			} else {
-				int row = word.getStartRow()+i;
-				int column = word.getStartColumn();
-				String s = Character.toString(myBoard.getSqContents(row, column));
-				tempWord = new Word(row, column, Word.HORIZONTAL, s );
-				temp.add(myGrowWord(tempWord).getLetters());
+				row++;
 			}
 		}
-		temp.add(word.getLetters());
-		return dictionary.areWords(temp);
+		return check;
 	}
 	
 	private Word myGrowWord (Word word) {
