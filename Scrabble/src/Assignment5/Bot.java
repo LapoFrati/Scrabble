@@ -269,18 +269,18 @@ public class Bot {
 			for(int j = 0; j<Board.SIZE; j++){
 				if(board.getSqContents(i, j) != Board.EMPTY){
 					noWordsOnBoard = false;
-					if( gad.isFreeNextLoc(board, Word.HORIZONTAL, i, j) 
+					if( gad.isFreePrevLoc(board, Word.HORIZONTAL, i, j) 
 						|| gad.isFreeNextLoc(board, Word.HORIZONTAL, i, j) )
 						
 						gad.visit(player.getFrame().getAllTiles(), board, i, j, Word.HORIZONTAL, gad.root, "", true, i, j, false);
 						
-					if( gad.isFreeNextLoc(board, Word.VERTICAL, i, j) 
+					if( gad.isFreePrevLoc(board, Word.VERTICAL, i, j) 
 						|| gad.isFreeNextLoc(board, Word.VERTICAL, i, j) )
 						
 						gad.visit(player.getFrame().getAllTiles(), board, i, j, Word.VERTICAL, gad.root, "", true, i, j, false);
 				}
 				if(noWordsOnBoard){
-					gad.visit(player.getFrame().getAllTiles(), board, Board.CENTRE, Board.CENTRE, Word.HORIZONTAL, gad.root, "", false, Board.CENTRE, Board.CENTRE, false);
+					gad.visit(player.getFrame().getAllTiles(), board, Board.CENTRE, Board.CENTRE, Word.HORIZONTAL, gad.root, "", true, Board.CENTRE, Board.CENTRE, false);
 				}
 			}
 		}
