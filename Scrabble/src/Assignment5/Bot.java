@@ -17,6 +17,7 @@ public class Bot {
 	private LinkedList<Word> legalWords;
 	private String inputFileName = "sowpods.txt";
 	private GADDAG gad;
+	private boolean noWordsOnBoard = true;
 	
 	private class GADDAG {
 		
@@ -242,7 +243,6 @@ public class Bot {
 				}
 			}
 		}
-		
 	}
 	
 	public Bot () throws FileNotFoundException {
@@ -268,6 +268,7 @@ public class Bot {
 		for(int i = 0; i<Board.SIZE; i++){
 			for(int j = 0; j<Board.SIZE; j++){
 				if(board.getSqContents(i, j) != Board.EMPTY){
+					noWordsOnBoard = false;
 					if( gad.isFreeNextLoc(board, Word.HORIZONTAL, i, j) 
 						|| gad.isFreeNextLoc(board, Word.HORIZONTAL, i, j) )
 						
@@ -277,7 +278,10 @@ public class Bot {
 						|| gad.isFreeNextLoc(board, Word.VERTICAL, i, j) )
 						
 						gad.visit(player.getFrame().getAllTiles(), board, i, j, Word.VERTICAL, gad.root, "", false, i, j, false);
-				}	
+				}
+				if(noWordsOnBoard){
+					gad.visit(player.getFrame().getAllTiles(), board, Board.CENTRE, Board.CENTRE, Word.HORIZONTAL, gad.root, "", false, Board.CENTRE, Board.CENTRE, false);
+				}
 			}
 		}
 		if(legalWords.size() == 0){
