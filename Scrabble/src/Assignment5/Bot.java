@@ -172,12 +172,12 @@ public class Bot {
 							if (tileUsed) {
 								if (dir == Word.HORIZONTAL) {
 									Word tempWord = new Word(actualRow,initialColumn-j+1,dir,newWord);
-									if(board.checkWord(tempWord, bot.getFrame()) == UI.WORD_OK && checkSides(tempWord))
+									if(board.checkWord(tempWord, bot.getFrame()) == UI.WORD_OK && checkSides(tempWord, initialRow, initialColumn))
 										legalWords.add(tempWord);
 								}
 								else {
 									Word tempWord = new Word(initialRow-j+1,actualColumn,dir,newWord);
-									if(board.checkWord(tempWord, bot.getFrame()) == UI.WORD_OK && checkSides(tempWord))
+									if(board.checkWord(tempWord, bot.getFrame()) == UI.WORD_OK && checkSides(tempWord, initialRow, initialColumn))
 										legalWords.add(tempWord);
 								}
 							}
@@ -212,14 +212,14 @@ public class Bot {
 						boolean isIn = false;
 						Tile t = null;
 						for (Tile tile : tiles)
-							if (tile.matches(c)) {
+							if (tile.matches(c) || tile.isBlank()) {
 								isIn = true;
+								nextLetter = tile.isBlank() ? Character.toLowerCase(c) : c;
 								t = tile;
 								break;
 							}
 						if (isIn) {
 							tileUsed = true;
-							nextLetter = t.getFace();
 							int i = node.hasChild(nextLetter);
 							if (i != -1) {
 								/*
@@ -238,12 +238,12 @@ public class Bot {
 									newWord += word.substring(j+1);
 									if (dir == Word.HORIZONTAL) {
 										Word tempWord = new Word(actualRow,initialColumn-j+1,dir,newWord);
-										if(board.checkWord(tempWord, bot.getFrame()) == UI.WORD_OK && checkSides(tempWord))
+										if(board.checkWord(tempWord, bot.getFrame()) == UI.WORD_OK && checkSides(tempWord, initialRow, initialColumn))
 											legalWords.add(tempWord);
 									}
 									else {
 										Word tempWord = new Word(initialRow-j+1,actualColumn,dir,newWord);
-										if(board.checkWord(tempWord, bot.getFrame()) == UI.WORD_OK && checkSides(tempWord))
+										if(board.checkWord(tempWord, bot.getFrame()) == UI.WORD_OK && checkSides(tempWord, initialRow, initialColumn))
 											legalWords.add(tempWord);
 									}
 								}
@@ -298,12 +298,12 @@ public class Bot {
 				if(board.getSqContents(i, j) != Board.EMPTY){
 					noWordsOnBoard = false;
 					if( gad.isFreePrevLoc(board, Word.HORIZONTAL, i, j) 
-						|| gad.isFreeNextLoc(board, Word.HORIZONTAL, i, j) )
+						&& gad.isFreeNextLoc(board, Word.HORIZONTAL, i, j) )
 						
 						gad.visit(player.getFrame().getAllTiles(), board, i, j, Word.HORIZONTAL, gad.root, "", true, i, j, false);
 						
 					if( gad.isFreePrevLoc(board, Word.VERTICAL, i, j) 
-						|| gad.isFreeNextLoc(board, Word.VERTICAL, i, j) )
+						&& gad.isFreeNextLoc(board, Word.VERTICAL, i, j) )
 						
 						gad.visit(player.getFrame().getAllTiles(), board, i, j, Word.VERTICAL, gad.root, "", true, i, j, false);
 				}
@@ -314,19 +314,16 @@ public class Bot {
 		}
 		
 		if(legalWords.size() == 0){
-			/*
 			ArrayList<Tile> rack = player.getFrame().getAllTiles();
 			letters = "";
 			
-			tilesToExchange = Math.round(((float)Math.random()*3)+2);	
+			int tilesToExchange = Math.round(((float)Math.random()*3)+2);	
 			
 			for(int i = 0; i<tilesToExchange; i++){
 				letters += rack.get(i).getFace();
 			}
 			
 			return UI.COMMAND_EXCHANGE;
-			*/
-			return UI.COMMAND_PASS;
 		}
 		else{
 			getHighestValueWord(board, player, dictionary);
@@ -429,7 +426,8 @@ public class Bot {
 		int bestValue = 0, currentValue;
 
 		for(Word tempWord : legalWords){
-			currentValue = board.getTotalWordScore(tempWord);
+			//currentValue = board.getTotalWordScore(tempWord);
+			currentValue = tempWord.getLetters().length();
 			if(currentValue > bestValue){
 				bestValue = currentValue;
 				word = tempWord;
@@ -437,58 +435,29 @@ public class Bot {
 		}
 	}
 	
-	boolean checkSides(Word word){
+	boolean checkSides(Word word, int startRow, int startColumn){
 		boolean check = true;
 		int row = word.getStartRow();
 		int column = word.getStartColumn();
 		int dir = word.getDirection();
 		int opDir = word.getOppositeDirection();
-		
-		for(int i = 0; i < word.getLength()-1 && check; i++){
-			check = check && gad.isFreeNextLoc(myBoard, opDir, row, column) && gad.isFreePrevLoc(myBoard, opDir, row, column);
-			if(dir == Word.HORIZONTAL){
+		ArrayList<String> test = new ArrayList<String>(1);
+		test.add(word.getLetters());
+		for(int i = 0; i < word.getLength() && check; i++){
+			if (row != startRow || column != startColumn)
+				check = check && gad.isFreeNextLoc(myBoard, opDir, row, column) && gad.isFreePrevLoc(myBoard, opDir, row, column);
+			if(dir == Word.HORIZONTAL)
 				column++;
-			} else {
+			else
 				row++;
-			}
 		}
+		if(dir == Word.HORIZONTAL)
+			column--;
+		else
+			row--;
+		check = check && dictionary.areWords(test);
+		check = check && gad.isFreePrevLoc(myBoard, dir, word.getStartRow(), word.getStartColumn()) && gad.isFreeNextLoc(myBoard, dir, row, column);
 		return check;
-	}
-	
-	private Word myGrowWord (Word word) {
-		Word newWord;
-		StringBuffer letters = new StringBuffer();
-		int startRow, endRow, startColumn, endColumn, length;
-		
-		startRow = word.getStartRow();
-		startColumn = word.getStartColumn();
-		length = word.getLength();
-		letters.append(word.getLetters());
-		if (word.isVertical()) {
-			endRow = startRow + length - 1;
-			while ( (startRow > 0) && (myBoard.getSqContents(startRow-1,startColumn) != Board.EMPTY) ) {
-				startRow--;
-				letters.insert(0,myBoard.getSqContents(startRow,startColumn));
-			}
-			while ( (endRow < Board.SIZE-1) && (myBoard.getSqContents(endRow+1,startColumn) != Board.EMPTY) ) {
-				endRow++;
-				letters.append(myBoard.getSqContents(endRow,startColumn));
-			}			
-		}		
-		else {  // isHorizontal
-			endColumn = startColumn + length - 1;
-			while ( (startColumn > 0) && (myBoard.getSqContents(startRow,startColumn-1) != Board.EMPTY) ) {
-				startColumn--;
-				letters.insert(0,myBoard.getSqContents(startRow,startColumn));
-			}
-			while ( (endColumn < Board.SIZE-1) && (myBoard.getSqContents(startRow,endColumn+1) != Board.EMPTY) ) {
-				endColumn++;
-				letters.append(myBoard.getSqContents(startRow,endColumn));
-			}						
-		}
-		newWord = new Word (startRow, startColumn, word.getDirection(), letters.toString());
-		
-		return(newWord);
 	}
 	
 }
